@@ -1,5 +1,2 @@
+require "markdiff/differ"
 require "markdiff/version"
-
-module Markdiff
-  # Your code goes here...
-end
