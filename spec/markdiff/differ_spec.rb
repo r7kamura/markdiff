@@ -68,7 +68,7 @@ RSpec.describe Markdiff::Differ do
 
       it "returns del and ins elements" do
         expect(subject.to_html).to eq <<-EOS.strip_heredoc.rstrip
-          <p>a</p><ins><p>c</p></ins><del><p>b</p></del>
+          <p>a</p><del><p>b</p></del><ins><p>c</p></ins>
         EOS
       end
     end

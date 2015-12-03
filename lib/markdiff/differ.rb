@@ -44,6 +44,8 @@ module Markdiff
         if patch[:removes].include?(before_index)
           before_child = before_child.replace("<del>#{before_child.to_html}</del>")
         end
+      end
+      before_document.children.each_with_index do |before_child, before_index|
         patch[:appends].reverse.each do |operation|
           case inverted_identity_map[operation[:previous_index]]
           when nil
@@ -53,7 +55,11 @@ module Markdiff
             end
           when before_index
             after_child = after_document.children[operation[:index]]
-            before_child.add_next_sibling("<ins>#{after_child}</ins>")
+            target = before_child
+            while target.next_element && target.next_element.matches?("del") do
+              target = target.next_element
+            end
+            target.add_next_sibling("<ins>#{after_child}</ins>")
           end
         end
       end
