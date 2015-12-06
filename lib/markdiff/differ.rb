@@ -32,12 +32,6 @@ module Markdiff
 
     private
 
-    # @param [Nokogiri::XML::Node] node
-    # @return [String]
-    def calculate_key(node)
-      node.to_html.gsub(/\s+/, " ")
-    end
-
     # Takes 2 parent nodes and recursively compare their children.
     #
     # @note There are 3 types of patch operations:
