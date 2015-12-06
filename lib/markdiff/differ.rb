@@ -3,7 +3,6 @@ require "nokogiri"
 module Markdiff
   class Differ
     def apply(patch, node)
-      # node = node.clone
       patch.each do |operation|
         case operation[:type]
         when :add_previous_sibling
@@ -11,8 +10,7 @@ module Markdiff
         when :prepend_child
           operation[:parent_node].add_child("<ins>#{operation[:node]}</ins>")
         when :remove
-          # operation[:node].replace("<del>#{operation[:node]}</del>")
-          operation[:node].swap("<del>#{operation[:node]}</del>")
+          operation[:node].replace("<del>#{operation[:node]}</del>")
         else
           raise "Unknown operation type: #{operation[:type].inspect}"
         end
