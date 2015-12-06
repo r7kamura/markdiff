@@ -1,21 +1,22 @@
 require "nokogiri"
+require "markdiff/operations/add_previous_sibling_operation"
+require "markdiff/operations/add_child_operation"
+require "markdiff/operations/remove_operation"
 
 module Markdiff
   class Differ
     # Apply given patch to given node
-    # @param [Array<Hash>] patch
+    # @param [Array<Markdiff::Operations::Base>] patch
     # @param [Nokogiri::XML::Node] node
     def apply(patch, node)
       patch.each do |operation|
-        case operation[:type]
-        when :add_previous_sibling
-          operation[:right_node].add_previous_sibling("<ins>#{operation[:node]}</ins>")
-        when :add_child
-          operation[:parent_node].add_child("<ins>#{operation[:node]}</ins>")
-        when :remove
-          operation[:node].replace("<del>#{operation[:node]}</del>")
-        else
-          raise "Unknown operation type: #{operation[:type].inspect}"
+        case operation
+        when ::Markdiff::Operations::AddPreviousSiblingOperation
+          operation.target_node.add_previous_sibling(operation.inserted_node)
+        when ::Markdiff::Operations::AddChildOperation
+          operation.target_node.add_child(operation.inserted_node)
+        when ::Markdiff::Operations::RemoveOperation
+          operation.target_node.replace(operation.inserted_node)
         end
       end
       node
@@ -24,7 +25,7 @@ module Markdiff
     # Takes parent nodes and returns a patch as an Array of operations
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
-    # @return [Array<Hash>] Patch
+    # @return [Array<Markdiff::Operations::Base>] Patch
     def diff(before_node, after_node)
       if before_node.to_html == after_node.to_html
         []
@@ -45,7 +46,7 @@ module Markdiff
     #
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
-    # @return [Array<Hash>] Patch
+    # @return [Array<Markdiff::Operations::Base>] Patch
     def diff_children(before_node, after_node)
       patch = []
       identity_map = {}
@@ -80,7 +81,7 @@ module Markdiff
 
       before_node.children.each do |before_child|
         unless identity_map[before_child]
-          patch << { node: before_child, type: :remove }
+          patch << ::Markdiff::Operations::RemoveOperation.new(target_node: before_child)
         end
       end
 
@@ -90,10 +91,10 @@ module Markdiff
           loop do
             case
             when inverted_identity_map[right_node]
-              patch << { right_node: inverted_identity_map[right_node], node: after_child, type: :add_previous_sibling }
+              patch << ::Markdiff::Operations::AddPreviousSiblingOperation.new(inserted_node: after_child, target_node: inverted_identity_map[right_node])
               break
             when right_node.nil?
-              patch << { parent_node: before_node, node: after_child, type: :add_child }
+              patch << ::Markdiff::Operations::AddChildOperation.new(inserted_node: after_child, target_node: before_node)
               break
             else
               right_node = right_node.next_sibling
