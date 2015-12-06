@@ -136,5 +136,19 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html.gsub("\n", "")).to eq "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td><del>d</del><ins>e</ins></td></tr></tbody></table>"
       end
     end
+
+    context "with ul and li" do
+      let(:after_string) do
+        "<ul><li>a</li><li>b</li><li>a</li></ul>"
+      end
+
+      let(:before_string) do
+        "<ul><li>a</li><li>a</li><li>a</li></ul>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html.gsub("\n", "")).to eq "<ul><li>a</li><li><del>a</del><ins>b</ins></li><li>a</li></ul>"
+      end
+    end
   end
 end
