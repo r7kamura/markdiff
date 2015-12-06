@@ -49,7 +49,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq "<p><ins>b</ins><del>a</del></p>"
+        expect(subject.to_html).to eq "<p><del>a</del><ins>b</ins></p>"
       end
     end
   end
@@ -144,11 +144,11 @@ RSpec.describe Markdiff::Differ do
       end
 
       let(:before_string) do
-        "<p>a</p>"
+        "<p>b</p>"
       end
 
-      it "returns :add_next_sibling operation" do
-        expect(subject[0][:type]).to eq :add_next_sibling
+      it "returns :add_previous_sibling operation" do
+        expect(subject[0][:type]).to eq :add_previous_sibling
       end
     end
 

@@ -6,9 +6,9 @@ module Markdiff
       # node = node.clone
       patch.each do |operation|
         case operation[:type]
-        when :add_next_sibling
+        when :add_previous_sibling
         when :prepend_child
-          operation[:parent_node].prepend_child("<ins>#{operation[:node]}</ins>")
+          operation[:parent_node].add_child("<ins>#{operation[:node]}</ins>")
         when :remove
           # operation[:node].replace("<del>#{operation[:node]}</del>")
           operation[:node].swap("<del>#{operation[:node]}</del>")
@@ -43,7 +43,7 @@ module Markdiff
     #
     # @note There are 3 types of patch operations:
     #
-    # - add_next_sibling
+    # - add_previous_sibling
     # - prepend_child
     # - remove
     #
@@ -90,17 +90,17 @@ module Markdiff
 
       after_node.children.each do |after_child|
         unless inverted_identity_map[after_child]
-          left_node = after_child.previous
+          right_node = after_child.next_sibling
           loop do
             case
-            when inverted_identity_map[left_node]
-              patch << { left_node: left_node, node: after_child, type: :add_next_sibling }
+            when inverted_identity_map[right_node]
+              patch << { right_node: right_node, node: after_child, type: :add_previous_sibling }
               break
-            when left_node.nil?
+            when right_node.nil?
               patch << { parent_node: before_node, node: after_child, type: :prepend_child }
               break
             else
-              left_node = left_node.previous
+              right_node = right_node.next_sibling
             end
           end
         end
