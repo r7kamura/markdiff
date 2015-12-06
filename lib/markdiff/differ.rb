@@ -2,6 +2,9 @@ require "nokogiri"
 
 module Markdiff
   class Differ
+    # Apply given patch to given node
+    # @param [Array<Hash>] patch
+    # @param [Nokogiri::XML::Node] node
     def apply(patch, node)
       patch.each do |operation|
         case operation[:type]
