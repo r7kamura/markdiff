@@ -5,11 +5,11 @@ require "markdiff/operations/remove_operation"
 
 module Markdiff
   class Differ
-    # Apply given operations to given node
+    # Apply a given patch to a given node
     # @param [Array<Markdiff::Operations::Base>] operations
     # @param [Nokogiri::XML::Node] node
     # @return [Nokogiri::XML::Node] Applied node
-    def apply(operations, node)
+    def apply_patch(operations, node)
       operations.each do |operation|
         case operation
         when ::Markdiff::Operations::AddPreviousSiblingOperation
@@ -23,15 +23,15 @@ module Markdiff
       node
     end
 
-    # Creates a patch from given nodes
+    # Creates a patch from given two nodes
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
     # @return [Array<Markdiff::Operations::Base>] operations
-    def diff(before_node, after_node)
+    def create_patch(before_node, after_node)
       if before_node.to_html == after_node.to_html
         []
       else
-        diff_children(before_node, after_node)
+        create_patch_from_children(before_node, after_node)
       end
     end
 
@@ -40,7 +40,7 @@ module Markdiff
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
     # @return [Array<Markdiff::Operations::Base>] operations
-    def diff_children(before_node, after_node)
+    def create_patch_from_children(before_node, after_node)
       operations = []
       identity_map = {}
       inverted_identity_map = {}
@@ -67,7 +67,7 @@ module Markdiff
           if before_child.name == after_child.name && !before_child.text?
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
-            operations += diff(before_child, after_child)
+            operations += create_patch(before_child, after_child)
           end
         end
       end

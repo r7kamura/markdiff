@@ -16,13 +16,13 @@ RSpec.describe Markdiff::Differ do
     described_class.new
   end
 
-  describe "#apply" do
+  describe "#apply_patch" do
     subject do
-      differ.apply(patch, before_node)
+      differ.apply_patch(patch, before_node)
     end
 
     let(:patch) do
-      differ.diff(before_node, after_node)
+      differ.create_patch(before_node, after_node)
     end
 
     context "with any valid arguments" do
