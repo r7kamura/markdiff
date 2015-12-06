@@ -1,6 +1,6 @@
 require "nokogiri"
-require "markdiff/operations/add_previous_sibling_operation"
 require "markdiff/operations/add_child_operation"
+require "markdiff/operations/add_previous_sibling_operation"
 require "markdiff/operations/remove_operation"
 
 module Markdiff
@@ -37,6 +37,13 @@ module Markdiff
 
     private
 
+    # 1. Create identity map and collect patches from descendants
+    #   1-1. Detect exact-matched nodes
+    #   1-2. Detect partial-matched nodes and recursively walk through its children
+    # 2. Create remove operations from identity map
+    # 3. Create insert operations from identity map
+    # 4. Return operations as a patch
+    #
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
     # @return [Array<Markdiff::Operations::Base>] operations
