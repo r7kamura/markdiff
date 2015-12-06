@@ -4,21 +4,59 @@ require "nokogiri"
 require "spec_helper"
 
 RSpec.describe Markdiff::Differ do
+  let(:after_node) do
+    Nokogiri::HTML.fragment(after_string)
+  end
+
+  let(:before_node) do
+    Nokogiri::HTML.fragment(before_string)
+  end
+
   let(:differ) do
     described_class.new
+  end
+
+  describe "#apply" do
+    subject do
+      differ.apply(patch, before_node)
+    end
+
+    let(:patch) do
+      differ.diff(before_node, after_node)
+    end
+
+    context "with any valid arguments" do
+      let(:after_string) do
+        "<p>b</p>"
+      end
+
+      let(:before_string) do
+        "<p>a</p>"
+      end
+
+      it "returns a Nokogiri::XML::Node" do
+        expect(subject).to be_a Nokogiri::XML::Node
+      end
+    end
+
+    context "with different text node" do
+      let(:after_string) do
+        "<p>b</p>"
+      end
+
+      let(:before_string) do
+        "<p>a</p>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<p><ins>b</ins><del>a</del></p>"
+      end
+    end
   end
 
   describe "#diff" do
     subject do
       differ.diff(before_node, after_node)
-    end
-
-    let(:after_node) do
-      Nokogiri::HTML.fragment(after_string)
-    end
-
-    let(:before_node) do
-      Nokogiri::HTML.fragment(before_string)
     end
 
     context "with any valid arguments" do

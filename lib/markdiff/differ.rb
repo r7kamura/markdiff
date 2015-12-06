@@ -2,6 +2,23 @@ require "nokogiri"
 
 module Markdiff
   class Differ
+    def apply(patch, node)
+      # node = node.clone
+      patch.each do |operation|
+        case operation[:type]
+        when :add_next_sibling
+        when :prepend_child
+          operation[:parent_node].prepend_child("<ins>#{operation[:node]}</ins>")
+        when :remove
+          # operation[:node].replace("<del>#{operation[:node]}</del>")
+          operation[:node].swap("<del>#{operation[:node]}</del>")
+        else
+          raise "Unknown operation type: #{operation[:type].inspect}"
+        end
+      end
+      node
+    end
+
     # Takes parent nodes and returns a patch as an Array of operations
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
@@ -80,7 +97,7 @@ module Markdiff
               patch << { left_node: left_node, node: after_child, type: :add_next_sibling }
               break
             when left_node.nil?
-              patch << { parent_node: after_node, node: after_child, type: :prepend_child }
+              patch << { parent_node: before_node, node: after_child, type: :prepend_child }
               break
             else
               left_node = left_node.previous
