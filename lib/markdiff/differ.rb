@@ -10,7 +10,7 @@ module Markdiff
         case operation[:type]
         when :add_previous_sibling
           operation[:right_node].add_previous_sibling("<ins>#{operation[:node]}</ins>")
-        when :prepend_child
+        when :add_child
           operation[:parent_node].add_child("<ins>#{operation[:node]}</ins>")
         when :remove
           operation[:node].replace("<del>#{operation[:node]}</del>")
@@ -40,7 +40,7 @@ module Markdiff
     # @note There are 3 types of patch operations:
     #
     # - add_previous_sibling
-    # - prepend_child
+    # - add_child
     # - remove
     #
     # @param [Nokogiri::XML::Node] before_node
@@ -93,7 +93,7 @@ module Markdiff
               patch << { right_node: inverted_identity_map[right_node], node: after_child, type: :add_previous_sibling }
               break
             when right_node.nil?
-              patch << { parent_node: before_node, node: after_child, type: :prepend_child }
+              patch << { parent_node: before_node, node: after_child, type: :add_child }
               break
             else
               right_node = right_node.next_sibling
