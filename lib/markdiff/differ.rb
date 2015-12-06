@@ -8,6 +8,7 @@ module Markdiff
     # Apply given patch to given node
     # @param [Array<Markdiff::Operations::Base>] patch
     # @param [Nokogiri::XML::Node] node
+    # @return [Nokogiri::XML::Node] Applied node
     def apply(patch, node)
       patch.each do |operation|
         case operation
@@ -22,7 +23,7 @@ module Markdiff
       node
     end
 
-    # Takes parent nodes and returns a patch as an Array of operations
+    # Creates a patch from given nodes
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
     # @return [Array<Markdiff::Operations::Base>] Patch
@@ -36,14 +37,6 @@ module Markdiff
 
     private
 
-    # Takes 2 parent nodes and recursively compare their children.
-    #
-    # @note There are 3 types of patch operations:
-    #
-    # - add_previous_sibling
-    # - add_child
-    # - remove
-    #
     # @param [Nokogiri::XML::Node] before_node
     # @param [Nokogiri::XML::Node] after_node
     # @return [Array<Markdiff::Operations::Base>] Patch
