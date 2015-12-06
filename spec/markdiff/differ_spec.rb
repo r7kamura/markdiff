@@ -39,6 +39,20 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
+    context "with same node" do
+      let(:after_string) do
+        before_string
+      end
+
+      let(:before_string) do
+        "<p>a</p>"
+      end
+
+      it "returns same node" do
+        expect(subject.to_html).to eq before_node.to_html
+      end
+    end
+
     context "with different text node" do
       let(:after_string) do
         "<p>b</p>"
@@ -52,57 +66,6 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html).to eq "<p><del>a</del><ins>b</ins></p>"
       end
     end
-  end
-
-  describe "#diff" do
-    subject do
-      differ.diff(before_node, after_node)
-    end
-
-    context "with any valid arguments" do
-      let(:after_string) do
-        "<p>b</p>"
-      end
-
-      let(:before_string) do
-        "<p>a</p>"
-      end
-
-      it "returns a patch as an Array of Hash" do
-        is_expected.to be_an Array
-      end
-    end
-
-    context "with different text node" do
-      let(:after_string) do
-        "<p>b</p>"
-      end
-
-      let(:before_string) do
-        "<p>a</p>"
-      end
-
-      it "returns :remove and :prepend_child operations" do
-        expect(subject[0][:node]).to be_text
-        expect(subject[0][:type]).to eq :remove
-        expect(subject[1][:node]).to be_text
-        expect(subject[1][:type]).to eq :prepend_child
-      end
-    end
-
-    context "with same node" do
-      let(:after_string) do
-        before_string
-      end
-
-      let(:before_string) do
-        "<p>a</p>"
-      end
-
-      it "returns empty patch" do
-        expect(subject).to be_empty
-      end
-    end
 
     context "with different tag name" do
       let(:after_string) do
@@ -113,11 +76,8 @@ RSpec.describe Markdiff::Differ do
         "<p>a</p>"
       end
 
-      it "returns :remove and :prepend_child operations" do
-        expect(subject[0][:node].name).to eq "p"
-        expect(subject[0][:type]).to eq :remove
-        expect(subject[1][:node].name).to eq "h1"
-        expect(subject[1][:type]).to eq :prepend_child
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<del><p>a</p></del><ins><h1>a</h1></ins>"
       end
     end
 
@@ -130,11 +90,8 @@ RSpec.describe Markdiff::Differ do
         "<p>a</p>"
       end
 
-      it "returns :remove and :prepend_child operations" do
-        expect(subject[0][:node]).to be_text
-        expect(subject[0][:type]).to eq :remove
-        expect(subject[1][:node].name).to eq "strong"
-        expect(subject[1][:type]).to eq :prepend_child
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<p><del>a</del><ins><strong>a</strong></ins></p>"
       end
     end
 
@@ -147,8 +104,8 @@ RSpec.describe Markdiff::Differ do
         "<p>b</p>"
       end
 
-      it "returns :add_previous_sibling operation" do
-        expect(subject[0][:type]).to eq :add_previous_sibling
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<ins><p>a</p></ins><p>b</p>"
       end
     end
 
@@ -161,8 +118,8 @@ RSpec.describe Markdiff::Differ do
         "<p>a</p><p>b</p>"
       end
 
-      it "returns :remove operation" do
-        expect(subject[0][:type]).to eq :remove
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<p>a</p><del><p>b</p></del>"
       end
     end
 
@@ -175,11 +132,8 @@ RSpec.describe Markdiff::Differ do
         "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td>d</td></tr></tbody></table>"
       end
 
-      it "returns expected operations" do
-        expect(subject[0][:node]).to be_text
-        expect(subject[0][:type]).to eq :remove
-        expect(subject[1][:node]).to be_text
-        expect(subject[1][:type]).to eq :prepend_child
+      it "returns expected patched node" do
+        expect(subject.to_html.gsub("\n", "")).to eq "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td><del>d</del><ins>e</ins></td></tr></tbody></table>"
       end
     end
   end

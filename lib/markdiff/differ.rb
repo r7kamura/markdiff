@@ -7,6 +7,7 @@ module Markdiff
       patch.each do |operation|
         case operation[:type]
         when :add_previous_sibling
+          operation[:right_node].add_previous_sibling("<ins>#{operation[:node]}</ins>")
         when :prepend_child
           operation[:parent_node].add_child("<ins>#{operation[:node]}</ins>")
         when :remove
@@ -94,7 +95,7 @@ module Markdiff
           loop do
             case
             when inverted_identity_map[right_node]
-              patch << { right_node: right_node, node: after_child, type: :add_previous_sibling }
+              patch << { right_node: inverted_identity_map[right_node], node: after_child, type: :add_previous_sibling }
               break
             when right_node.nil?
               patch << { parent_node: before_node, node: after_child, type: :prepend_child }
