@@ -89,7 +89,7 @@ module Markdiff
           next if inverted_identity_map[after_child]
           next if before_child.text?
           if before_child.name == after_child.name
-            if before_child.name == "a" && before_child["href"] != after_child["href"] && before_child.inner_html == after_child.inner_html
+            if detect_href_difference(before_child, after_child)
               operations << ::Markdiff::Operations::AddDataBeforeHrefOperation.new(after_href: after_child["href"], target_node: before_child)
             end
             identity_map[before_child] = after_child
@@ -124,6 +124,16 @@ module Markdiff
       end
 
       operations
+    end
+
+    # @param [Nokogiri::XML::Node] before_node
+    # @param [Nokogiri::XML::Node] after_node
+    # @return [false, true] True if given 2 nodes are both "a" nodes and have different href attributes
+    def detect_href_difference(before_node, after_node)
+      before_node.name == "a" &&
+      after_node.name == "a" &&
+      before_node["href"] != after_node["href"] &&
+      before_node.inner_html == after_node.inner_html
     end
   end
 end
