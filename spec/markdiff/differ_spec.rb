@@ -58,7 +58,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq "<p><del>a</del><ins>b</ins></p>"
+        expect(subject.to_html).to eq '<div class="changed"><p><del>a</del><ins>b</ins></p></div>'
       end
     end
 
@@ -86,7 +86,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq "<p><del>a</del><ins><strong>a</strong></ins></p>"
+        expect(subject.to_html).to eq '<div class="changed"><p><del>a</del><ins><strong>a</strong></ins></p></div>'
       end
     end
 
@@ -128,7 +128,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html.gsub("\n", "")).to eq "<table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td><del>d</del><ins>e</ins></td></tr></tbody></table>"
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td><del>d</del><ins>e</ins></td></tr></tbody></table></div>'
       end
     end
 
@@ -142,21 +142,21 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html.gsub("\n", "")).to eq "<ul><li>a</li><li><del>a</del><ins>b</ins></li><li>a</li></ul>"
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><ul><li>a</li><li><del>a</del><ins>b</ins></li><li>a</li></ul></div>'
       end
     end
 
     context "with different href in a node" do
       let(:after_string) do
-        '<a href="http://example.com/2">a</p>'
+        '<p><a href="http://example.com/2">a</a></p>'
       end
 
       let(:before_string) do
-        '<a href="http://example.com/1">a</p>'
+        '<p><a href="http://example.com/1">a</a></p>'
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq '<a href="http://example.com/2" data-before-href="http://example.com/1">a</a>'
+        expect(subject.to_html).to eq '<div class="changed"><p><a href="http://example.com/2" data-before-href="http://example.com/1">a</a></p></div>'
       end
     end
 
@@ -170,7 +170,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq '<h2 data-before-tag-name="h1">a</h2>'
+        expect(subject.to_html).to eq '<div class="changed"><h2 data-before-tag-name="h1">a</h2></div>'
       end
     end
   end
