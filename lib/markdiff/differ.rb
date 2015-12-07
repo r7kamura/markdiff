@@ -87,7 +87,7 @@ module Markdiff
           if inverted_identity_map[after_child]
             next
           end
-          if before_child.to_html == after_child.to_html
+          if before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
           end
