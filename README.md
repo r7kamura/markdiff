@@ -1,4 +1,4 @@
-# Markdiff
+# Markdiff [![Build Status](https://travis-ci.org/r7kamura/markdiff.svg)](https://travis-ci.org/r7kamura/markdiff)
 Rendered Markdown differ.
 
 ## Usage
