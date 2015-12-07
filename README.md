@@ -2,18 +2,10 @@
 Rendered Markdown differ.
 
 ## Usage
-### Code
 ```rb
-Markdiff::Differ.new.render(
-  "<p>a</p>",
-  "<p>b</p>"
-).to_html
-```
+require "markdiff"
 
-### Output
-Note: slightly modified for displaying
-
-```
-<del><p>a</p></del>
-<ins><p>b</p></ins>
+differ = Markdiff::Differ.new
+node = differ.render("<p>a</p>", "<p>b</p>")
+node.to_html #=> "<p><del>a</del><ins>b</ins></p>"
 ```

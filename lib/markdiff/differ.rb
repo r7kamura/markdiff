@@ -9,7 +9,7 @@ module Markdiff
     # Apply a given patch to a given node
     # @param [Array<Markdiff::Operations::Base>] operations
     # @param [Nokogiri::XML::Node] node
-    # @return [Nokogiri::XML::Node] Applied node
+    # @return [Nokogiri::XML::Node] Converted node
     def apply_patch(operations, node)
       operations.each do |operation|
         case operation
@@ -37,6 +37,17 @@ module Markdiff
       else
         create_patch_from_children(before_node, after_node)
       end
+    end
+
+    # Utility method to do both creating and applying a patch
+    # @param [String] before_string
+    # @param [String] after_string
+    # @return [Nokogiri::XML::Node] Converted node
+    def render(before_string, after_string)
+      before_node = ::Nokogiri::HTML.fragment(before_string)
+      after_node = ::Nokogiri::HTML.fragment(after_string)
+      patch = create_patch(before_node, after_node)
+      apply_patch(patch, before_node)
     end
 
     private
