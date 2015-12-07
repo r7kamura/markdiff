@@ -33,7 +33,7 @@ module Markdiff
           mark_li_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node.parent)
         when ::Markdiff::Operations::RemoveOperation
-          operation.target_node.replace(operation.inserted_node)
+          operation.target_node.replace(operation.inserted_node) if operation.target_node != operation.inserted_node
           mark_li_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
         end
@@ -167,7 +167,7 @@ module Markdiff
     # @param [Nokogiri::XML::Node] node
     def mark_li_as_changed(node)
       until node.parent.nil? || node.parent.fragment?
-        if node.name == "li" && node["class"] != "changed"
+        if node.name == "li" && node["class"].nil?
           node["class"] = "changed"
         end
         node = node.parent
