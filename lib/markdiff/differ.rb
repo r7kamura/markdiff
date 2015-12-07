@@ -1,5 +1,6 @@
 require "nokogiri"
 require "markdiff/operations/add_child_operation"
+require "markdiff/operations/add_data_before_href_operation"
 require "markdiff/operations/add_previous_sibling_operation"
 require "markdiff/operations/remove_operation"
 
@@ -14,6 +15,9 @@ module Markdiff
         case operation
         when ::Markdiff::Operations::AddPreviousSiblingOperation
           operation.target_node.add_previous_sibling(operation.inserted_node)
+        when ::Markdiff::Operations::AddDataBeforeHrefOperation
+          operation.target_node["data-before-href"] = operation.target_node["href"]
+          operation.target_node["href"] = operation.after_href
         when ::Markdiff::Operations::AddChildOperation
           operation.target_node.add_child(operation.inserted_node)
         when ::Markdiff::Operations::RemoveOperation
@@ -51,6 +55,8 @@ module Markdiff
       operations = []
       identity_map = {}
       inverted_identity_map = {}
+
+      # Exactly matching
       before_node.children.each do |before_child|
         after_node.children.each do |after_child|
           if inverted_identity_map[after_child]
@@ -63,15 +69,18 @@ module Markdiff
         end
       end
 
+      # Partial matching
       before_node.children.each do |before_child|
         if identity_map[before_child]
           next
         end
         after_node.children.each do |after_child|
-          if inverted_identity_map[after_child]
-            next
-          end
-          if before_child.name == after_child.name && !before_child.text?
+          next if inverted_identity_map[after_child]
+          next if before_child.text?
+          if before_child.name == after_child.name
+            if before_child.name == "a" && before_child["href"] != after_child["href"] && before_child.inner_html == after_child.inner_html
+              operations << ::Markdiff::Operations::AddDataBeforeHrefOperation.new(after_href: after_child["href"], target_node: before_child)
+            end
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
             operations += create_patch(before_child, after_child)
