@@ -159,5 +159,19 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html).to eq '<a href="http://example.com/2" data-before-href="http://example.com/1">a</a>'
       end
     end
+
+    context "with different level heading nodes" do
+      let(:after_string) do
+        "<h2>a</h2>"
+      end
+
+      let(:before_string) do
+        "<h1>a</h1>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq '<h2 data-before-tag-name="h1">a</h2>'
+      end
+    end
   end
 end

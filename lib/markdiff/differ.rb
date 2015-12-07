@@ -1,6 +1,7 @@
 require "nokogiri"
 require "markdiff/operations/add_child_operation"
 require "markdiff/operations/add_data_before_href_operation"
+require "markdiff/operations/add_data_before_tag_name_operation"
 require "markdiff/operations/add_previous_sibling_operation"
 require "markdiff/operations/remove_operation"
 
@@ -13,13 +14,16 @@ module Markdiff
     def apply_patch(operations, node)
       operations.each do |operation|
         case operation
-        when ::Markdiff::Operations::AddPreviousSiblingOperation
-          operation.target_node.add_previous_sibling(operation.inserted_node)
+        when ::Markdiff::Operations::AddChildOperation
+          operation.target_node.add_child(operation.inserted_node)
         when ::Markdiff::Operations::AddDataBeforeHrefOperation
           operation.target_node["data-before-href"] = operation.target_node["href"]
           operation.target_node["href"] = operation.after_href
-        when ::Markdiff::Operations::AddChildOperation
-          operation.target_node.add_child(operation.inserted_node)
+        when ::Markdiff::Operations::AddDataBeforeTagNameOperation
+          operation.target_node["data-before-tag-name"] = operation.target_node.name
+          operation.target_node.name = operation.after_tag_name
+        when ::Markdiff::Operations::AddPreviousSiblingOperation
+          operation.target_node.add_previous_sibling(operation.inserted_node)
         when ::Markdiff::Operations::RemoveOperation
           operation.target_node.replace(operation.inserted_node)
         end
@@ -95,6 +99,10 @@ module Markdiff
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
             operations += create_patch(before_child, after_child)
+          elsif detect_heading_level_difference(before_child, after_child)
+            operations << ::Markdiff::Operations::AddDataBeforeTagNameOperation.new(after_tag_name: after_child.name, target_node: before_child)
+            identity_map[before_child] = after_child
+            inverted_identity_map[after_child] = before_child
           end
         end
       end
@@ -124,6 +132,16 @@ module Markdiff
       end
 
       operations
+    end
+
+    # @param [Nokogiri::XML::Node] before_node
+    # @param [Nokogiri::XML::Node] after_node
+    # @return [false, true] True if given 2 nodes are both hN nodes and have different N (e.g. h1 and h2)
+    def detect_heading_level_difference(before_node, after_node)
+      before_node.name != after_node.name &&
+      %w[h1 h2 h3 h4 h5 h6].include?(before_node.name) &&
+      %w[h1 h2 h3 h4 h5 h6].include?(after_node.name) &&
+      before_node.inner_html == after_node.inner_html
     end
 
     # @param [Nokogiri::XML::Node] before_node
