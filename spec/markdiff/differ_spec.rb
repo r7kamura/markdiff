@@ -1,16 +1,7 @@
 require "markdiff"
-require "nokogiri"
 require "spec_helper"
 
 RSpec.describe Markdiff::Differ do
-  let(:after_node) do
-    Nokogiri::HTML.fragment(after_string)
-  end
-
-  let(:before_node) do
-    Nokogiri::HTML.fragment(before_string)
-  end
-
   let(:differ) do
     described_class.new
   end
@@ -44,7 +35,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns same node" do
-        expect(subject.to_html).to eq before_node.to_html
+        expect(subject.to_html).to eq before_string
       end
     end
 
