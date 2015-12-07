@@ -5,7 +5,13 @@ module Markdiff
     class AddChildOperation < Base
       # @return [String]
       def inserted_node
-        "<ins>#{@inserted_node}</ins>"
+        if @inserted_node.name == "li"
+          @inserted_node["class"] = "added"
+          @inserted_node.inner_html = "<ins>#{@inserted_node.inner_html}</ins>"
+          @inserted_node
+        else
+          "<ins>#{@inserted_node}</ins>"
+        end
       end
     end
   end

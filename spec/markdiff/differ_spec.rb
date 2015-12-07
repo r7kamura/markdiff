@@ -151,6 +151,34 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
+    context "with added child li" do
+      let(:after_string) do
+        "<ul><li>a</li><li>b</li></ul>"
+      end
+
+      let(:before_string) do
+        "<ul><li>a</li></ul>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><ul><li>a</li><li class="added"><ins>b</ins></li></ul></div>'
+      end
+    end
+
+    context "with added sibling li" do
+      let(:after_string) do
+        "<ul><li>a</li><li>b</li></ul>"
+      end
+
+      let(:before_string) do
+        "<ul><li>b</li></ul>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><ul><li class="added"><ins>a</ins></li><li>b</li></ul></div>'
+      end
+    end
+
     context "with different href in a node" do
       let(:after_string) do
         '<p><a href="http://example.com/2">a</a></p>'

@@ -30,7 +30,7 @@ module Markdiff
           mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddPreviousSiblingOperation
           operation.target_node.add_previous_sibling(operation.inserted_node)
-          mark_li_as_changed(operation.target_node)
+          mark_li_as_changed(operation.target_node) if operation.target_node.name != "li"
           mark_top_level_node_as_changed(operation.target_node.parent)
         when ::Markdiff::Operations::RemoveOperation
           operation.target_node.replace(operation.inserted_node) if operation.target_node != operation.inserted_node
