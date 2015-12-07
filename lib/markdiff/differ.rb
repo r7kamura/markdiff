@@ -16,20 +16,26 @@ module Markdiff
         case operation
         when ::Markdiff::Operations::AddChildOperation
           operation.target_node.add_child(operation.inserted_node)
-          mark_as_changed(operation.target_node)
+          mark_li_as_changed(operation.target_node)
+          mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddDataBeforeHrefOperation
           operation.target_node["data-before-href"] = operation.target_node["href"]
           operation.target_node["href"] = operation.after_href
-          mark_as_changed(operation.target_node)
+          mark_li_as_changed(operation.target_node)
+          mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddDataBeforeTagNameOperation
           operation.target_node["data-before-tag-name"] = operation.target_node.name
           operation.target_node.name = operation.after_tag_name
-          mark_as_changed(operation.target_node)
+          mark_li_as_changed(operation.target_node)
+          mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddPreviousSiblingOperation
           operation.target_node.add_previous_sibling(operation.inserted_node)
-          mark_as_changed(operation.target_node.parent)
+          mark_li_as_changed(operation.target_node)
+          mark_top_level_node_as_changed(operation.target_node.parent)
         when ::Markdiff::Operations::RemoveOperation
           operation.target_node.replace(operation.inserted_node)
+          mark_li_as_changed(operation.target_node)
+          mark_top_level_node_as_changed(operation.target_node)
         end
       end
       node
@@ -158,9 +164,18 @@ module Markdiff
       before_node.inner_html == after_node.inner_html
     end
 
+    # @param [Nokogiri::XML::Node] node
+    def mark_li_as_changed(node)
+      until node.parent.nil? || node.parent.fragment?
+        if node.name == "li" && node["class"] != "changed"
+          node["class"] = "changed"
+        end
+        node = node.parent
+      end
+    end
 
     # @param [Nokogiri::XML::Node] node
-    def mark_as_changed(node)
+    def mark_top_level_node_as_changed(node)
       node = node.parent until node.parent.nil? || node.parent.fragment?
       unless node.name == "div" && node["class"] == "changed"
         node.replace(%(<div class="changed">#{node}</div>))
