@@ -5,7 +5,7 @@ require "markdiff/version"
 Gem::Specification.new do |spec|
   spec.name          = "markdiff"
   spec.version       = Markdiff::VERSION
-  spec.authors       = ["r7kamura"]
+  spec.authors       = ["Ryo Nakamura"]
   spec.email         = ["r7kamura@gmail.com"]
   spec.summary       = "Rendered Markdown differ."
   spec.homepage      = "https://github.com/r7kamura/markdiff"
