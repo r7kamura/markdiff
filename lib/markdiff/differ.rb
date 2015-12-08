@@ -4,6 +4,7 @@ require "markdiff/operations/add_data_before_href_operation"
 require "markdiff/operations/add_data_before_tag_name_operation"
 require "markdiff/operations/add_previous_sibling_operation"
 require "markdiff/operations/remove_operation"
+require "markdiff/operations/text_diff_operation"
 
 module Markdiff
   class Differ
@@ -36,6 +37,11 @@ module Markdiff
           operation.target_node.replace(operation.inserted_node) if operation.target_node != operation.inserted_node
           mark_li_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
+        when ::Markdiff::Operations::TextDiffOperation
+          parent = operation.target_node.parent
+          operation.target_node.replace(operation.inserted_node)
+          mark_li_as_changed(parent)
+          mark_top_level_node_as_changed(parent)
         end
       end
       node
@@ -100,16 +106,22 @@ module Markdiff
           next
         end
         after_node.children.each do |after_child|
-          next if inverted_identity_map[after_child]
-          next if before_child.text?
-          if before_child.name == after_child.name
+          case
+          when inverted_identity_map[after_child]
+          when before_child.text?
+            if after_child.text?
+              identity_map[before_child] = after_child
+              inverted_identity_map[after_child] = before_child
+              operations << ::Markdiff::Operations::TextDiffOperation.new(target_node: before_child, after_node: after_child)
+            end
+          when before_child.name == after_child.name
             if detect_href_difference(before_child, after_child)
               operations << ::Markdiff::Operations::AddDataBeforeHrefOperation.new(after_href: after_child["href"], target_node: before_child)
             end
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
             operations += create_patch(before_child, after_child)
-          elsif detect_heading_level_difference(before_child, after_child)
+          when detect_heading_level_difference(before_child, after_child)
             operations << ::Markdiff::Operations::AddDataBeforeTagNameOperation.new(after_tag_name: after_child.name, target_node: before_child)
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child

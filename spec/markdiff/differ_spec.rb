@@ -53,6 +53,20 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
+    context "with partial difference in text node" do
+      let(:after_string) do
+        "<p>aaa bbb aaa</p>"
+      end
+
+      let(:before_string) do
+        "<p>aaa aaa aaa</p>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq '<div class="changed"><p>aaa <del>aaa</del><ins>bbb</ins> aaa</p></div>'
+      end
+    end
+
     context "with different tag name" do
       let(:after_string) do
         "<h1>a</h1>"
