@@ -1,3 +1,6 @@
+## 0.3.0
+- Support partial text diff
+
 ## 0.2.1
 - Support li.added and li.removed
 
