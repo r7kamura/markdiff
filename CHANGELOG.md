@@ -1,3 +1,7 @@
+## 0.4.0
+- Chanage .changed specs
+- Fix bugs on text diff
+
 ## 0.3.0
 - Support partial text diff
 
