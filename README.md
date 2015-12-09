@@ -12,4 +12,7 @@ node.to_html #=> '<p class="changed"><del>a</del><ins>b</ins></p>'
 
 See [spec/markdiff/differ_spec.rb](spec/markdiff/differ_spec.rb) for more examples.
 
+### Demo
+Execute `ruby example/app.rb` to run [demo app](example/app.rb).
+
 ![demo](images/demo.png)
