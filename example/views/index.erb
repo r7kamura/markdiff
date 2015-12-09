@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Markdiff</title>
+    <style>
+      a {
+        color: #4B81C6;
+        text-decoration: none;
+      }
+
+      a ins {
+        color: #4B81C6;
+      }
+
+      a[data-before-href] {
+        border-bottom: dotted 1px #999;
+        text-decoration: none;
+      }
+
+      body {
+        line-height: 1.7;
+        margin: 48px auto;
+        padding-left: 16px;
+        padding-right: 16px;
+        width: 860px;
+      }
+
+      del {
+        background-color: #FFEAEA;
+        color: #CB4000;
+      }
+
+      ins {
+        background-color: #E9FFE9;
+        color: green;
+        text-decoration: none;
+      }
+
+      li.added {
+        color: #7DCD55;
+      }
+
+      li.removed {
+        color: #CB4000;
+      }
+
+      section + section {
+        margin-top: 48px;
+      }
+
+      textarea {
+        width: 100%;
+      }
+
+      .diff > * {
+        padding-left: 32px;
+      }
+
+      .diff > del {
+        background-color: inherit;
+        border-left: solid 4px #CB4000;
+        color: inherit;
+        display: block;
+        text-decoration: none;
+      }
+
+      .diff > ins {
+        background-color: inherit;
+        border-left: solid 4px #7DCD55;
+        color: inherit;
+        display: block;
+      }
+
+      .diff > .changed {
+        border-left: solid 4px #FFC134;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="/" method="get">
+      <section>
+        <h3>before</h3>
+        <textarea name="before" rows="8"><%= params[:before] %></textarea>
+      </section>
+      <section>
+        <h3>after</h3>
+        <textarea name="after" rows="8"><%= params[:after] %></textarea>
+        <input type="submit" value="OK">
+      </section>
+      <section>
+        <h3>diff</h3>
+        <div class="diff">
+          <%= @diff %>
+        </div>
+      </section>
+    </form>
+  </body>
+</html>
