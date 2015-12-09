@@ -20,7 +20,7 @@ module Markdiff
           if type == "-"
             before_elements[position] = "<del>#{element}</del>"
           else
-            before_elements[position] += "<ins>#{element}</ins>"
+            before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
           end
         end
         ::Nokogiri::HTML.fragment(before_elements.join(" "))
