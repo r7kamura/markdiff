@@ -87,13 +87,24 @@ module Markdiff
       identity_map = {}
       inverted_identity_map = {}
 
+      # Exactly matching with index
+      before_node.children.each_with_index do |before_child, before_index|
+        after_child = after_node.children[before_index]
+        if !after_child.nil? && before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
+          identity_map[before_child] = after_child
+          inverted_identity_map[after_child] = before_child
+        end
+      end
+
       # Exactly matching
       before_node.children.each do |before_child|
+        next if identity_map[before_child]
         after_node.children.each do |after_child|
-          if inverted_identity_map[after_child]
-            next
-          end
-          if before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
+          case
+          when identity_map[before_child]
+            break
+          when inverted_identity_map[after_child]
+          when before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
           end
@@ -107,6 +118,8 @@ module Markdiff
         end
         after_node.children.each do |after_child|
           case
+          when identity_map[before_child]
+            break
           when inverted_identity_map[after_child]
           when before_child.text?
             if after_child.text?
@@ -189,9 +202,7 @@ module Markdiff
     # @param [Nokogiri::XML::Node] node
     def mark_top_level_node_as_changed(node)
       node = node.parent until node.parent.nil? || node.parent.fragment?
-      unless node.name == "div" && node["class"] == "changed"
-        node.replace(%(<div class="changed">#{node}</div>))
-      end
+      node["class"] = "changed"
     end
   end
 end
