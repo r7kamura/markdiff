@@ -201,6 +201,7 @@ module Markdiff
 
     # @param [Nokogiri::XML::Node] node
     def mark_top_level_node_as_changed(node)
+      return if node.nil?
       node = node.parent until node.parent.nil? || node.parent.fragment?
       unless node.parent.nil? || node["class"] == "changed"
         div = Nokogiri::XML::Node.new("div", node.document)
