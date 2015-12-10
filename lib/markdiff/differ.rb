@@ -13,7 +13,7 @@ module Markdiff
     # @param [Nokogiri::XML::Node] node
     # @return [Nokogiri::XML::Node] Converted node
     def apply_patch(operations, node)
-      operations.each do |operation|
+      operations.sort_by(&:priority).reverse.each do |operation|
         case operation
         when ::Markdiff::Operations::AddChildOperation
           operation.target_node.add_child(operation.inserted_node)

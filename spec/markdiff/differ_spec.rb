@@ -234,5 +234,19 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html).to eq '<div class="changed"><h2 data-before-tag-name="h1">a</h2></div>'
       end
     end
+
+    context "with replaced operation target node" do
+      let(:after_string) do
+        "<h1>c</h1>d"
+      end
+
+      let(:before_string) do
+        "a<p>b</p>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq '<ins><h1>c</h1></ins><del>a</del><ins>d</ins><del><p>b</p></del>'
+      end
+    end
   end
 end

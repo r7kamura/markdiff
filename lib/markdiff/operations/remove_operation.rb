@@ -13,6 +13,10 @@ module Markdiff
           "<del>#{target_node}</del>"
         end
       end
+
+      def priority
+        2
+      end
     end
   end
 end

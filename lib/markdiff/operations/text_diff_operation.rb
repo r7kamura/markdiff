@@ -25,6 +25,10 @@ module Markdiff
         end
         ::Nokogiri::HTML.fragment(before_elements.join(" "))
       end
+
+      def priority
+        1
+      end
     end
   end
 end

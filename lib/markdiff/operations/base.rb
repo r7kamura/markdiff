@@ -10,6 +10,10 @@ module Markdiff
         @inserted_node = inserted_node
         @target_node = target_node
       end
+
+      def priority
+        3
+      end
     end
   end
 end
