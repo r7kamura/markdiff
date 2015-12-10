@@ -1,3 +1,6 @@
+## 0.5.1
+- Fix bug on text-diff operation
+
 ## 0.5.0
 - Wrap changed nodes by div.changed
 
