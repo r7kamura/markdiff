@@ -1,3 +1,6 @@
+## 0.5.0
+- Wrap changed nodes by div.changed
+
 ## 0.4.0
 - Chanage .changed specs
 - Fix bugs on text diff
