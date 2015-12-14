@@ -67,6 +67,20 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
+    context "with adding a new sibling" do
+      let(:after_string) do
+        "<p>a</p>\n\n<p>b</p>\n"
+      end
+
+      let(:before_string) do
+        "<p>b</p>\n"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq "<ins>\n\n</ins><ins><p>a</p></ins><p>b</p>\n"
+      end
+    end
+
     context "with different tag name" do
       let(:after_string) do
         "<h1>a</h1>"

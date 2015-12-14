@@ -72,6 +72,21 @@ module Markdiff
 
     private
 
+    # @param [Nokogiri::XML::Node] node1
+    # @param [Nokogiri::XML::Node] node2
+    # @return [false, true] True if given two nodes can be treated as same
+    def check_exact_match(node1, node2)
+      if node1.text?
+        if node2.text?
+          node1.to_s == node2.to_s
+        else
+          false
+        end
+      else
+        node1.to_html.gsub("\n", "") == node2.to_html.gsub("\n", "")
+      end
+    end
+
     # 1. Create identity map and collect patches from descendants
     #   1-1. Detect exact-matched nodes
     #   1-2. Detect partial-matched nodes and recursively walk through its children
@@ -90,7 +105,7 @@ module Markdiff
       # Exactly matching with index
       before_node.children.each_with_index do |before_child, before_index|
         after_child = after_node.children[before_index]
-        if !after_child.nil? && before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
+        if !after_child.nil? && check_exact_match(before_child, after_child)
           identity_map[before_child] = after_child
           inverted_identity_map[after_child] = before_child
         end
@@ -104,7 +119,7 @@ module Markdiff
           when identity_map[before_child]
             break
           when inverted_identity_map[after_child]
-          when before_child.to_html.gsub("\n", "") == after_child.to_html.gsub("\n", "")
+          when check_exact_match(before_child, after_child)
             identity_map[before_child] = after_child
             inverted_identity_map[after_child] = before_child
           end
