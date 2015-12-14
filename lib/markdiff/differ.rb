@@ -128,12 +128,16 @@ module Markdiff
               operations << ::Markdiff::Operations::TextDiffOperation.new(target_node: before_child, after_node: after_child)
             end
           when before_child.name == after_child.name
-            if detect_href_difference(before_child, after_child)
+            if before_child.attributes == after_child.attributes
+              identity_map[before_child] = after_child
+              inverted_identity_map[after_child] = before_child
+              operations += create_patch(before_child, after_child)
+            elsif detect_href_difference(before_child, after_child)
               operations << ::Markdiff::Operations::AddDataBeforeHrefOperation.new(after_href: after_child["href"], target_node: before_child)
+              identity_map[before_child] = after_child
+              inverted_identity_map[after_child] = before_child
+              operations += create_patch(before_child, after_child)
             end
-            identity_map[before_child] = after_child
-            inverted_identity_map[after_child] = before_child
-            operations += create_patch(before_child, after_child)
           when detect_heading_level_difference(before_child, after_child)
             operations << ::Markdiff::Operations::AddDataBeforeTagNameOperation.new(after_tag_name: after_child.name, target_node: before_child)
             identity_map[before_child] = after_child

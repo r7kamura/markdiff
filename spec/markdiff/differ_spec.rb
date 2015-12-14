@@ -248,5 +248,19 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html).to eq '<ins><h1>c</h1></ins><del>a</del><ins>d</ins><del><p>b</p></del>'
       end
     end
+
+    context "with tasklist" do
+      let(:after_string) do
+        '<ul><li><input type="checkbox" checked> a</li></ul>'
+      end
+
+      let(:before_string) do
+        '<ul><li><input type="checkbox"> a</li></ul>'
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><ul><li class="changed"><del><input type="checkbox"></del><ins><input type="checkbox" checked></ins> a</li></ul></div>'
+      end
+    end
   end
 end
