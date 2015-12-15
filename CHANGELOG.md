@@ -1,3 +1,6 @@
+## 0.6.0
+- Add .del class to all del elements
+
 ## 0.5.5
 - Preserve classes on adding new class (e.g. .added)
 
