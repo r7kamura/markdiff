@@ -1,3 +1,6 @@
+## 0.5.4
+- Fix bug on patch operations order
+
 ## 0.5.3
 - Fix bug on comparing nodes
 
