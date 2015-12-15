@@ -183,8 +183,11 @@ module Markdiff
     # @param [Nokogiri::XML::Node] node
     def mark_li_as_changed(node)
       until node.parent.nil? || node.parent.fragment?
-        if node.name == "li" && node["class"].nil?
-          node["class"] = "changed"
+        if node.name == "li"
+          classes = node["class"].to_s.split(/\s/)
+          unless classes.include?("added") || classes.include?("changed") || classes.include?("removed")
+            node["class"] = (classes + ["changed"]).join(" ")
+          end
         end
         node = node.parent
       end

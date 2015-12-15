@@ -7,7 +7,7 @@ module Markdiff
       def inserted_node
         if @inserted_node.name == "li"
           node = @inserted_node.clone
-          node["class"] = "added"
+          node["class"] = (node["class"].to_s.split(/\s/) + ["added"]).join(" ")
           node.inner_html = "<ins>#{@inserted_node.inner_html}</ins>"
           node
         else

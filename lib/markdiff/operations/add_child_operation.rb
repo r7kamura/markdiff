@@ -6,7 +6,7 @@ module Markdiff
       # @return [String]
       def inserted_node
         if @inserted_node.name == "li"
-          @inserted_node["class"] = "added"
+          @inserted_node["class"] = (@inserted_node["class"].to_s.split(/\s/) + ["added"]).join(" ")
           @inserted_node.inner_html = "<ins>#{@inserted_node.inner_html}</ins>"
           @inserted_node
         else
