@@ -77,7 +77,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq "<ins>\n\n</ins><ins><p>a</p></ins><p>b</p>\n"
+        expect(subject.to_html).to eq "<ins><p>a</p></ins><ins>\n\n</ins><p>b</p>\n"
       end
     end
 
@@ -277,7 +277,7 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
-    context "with " do
+    context "with prepending node" do
       let(:after_string) do
         "<h2>added</h2>\n\n<h2>a</h2>\n\n<p>b</p>\n"
       end
@@ -287,7 +287,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html.gsub("\n", "")).to eq "<ins></ins><ins><h2>added</h2></ins><h2>a</h2><p>b</p>"
+        expect(subject.to_html.gsub("\n", "")).to eq "<ins><h2>added</h2></ins><ins></ins><h2>a</h2><p>b</p>"
       end
     end
   end
