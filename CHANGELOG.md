@@ -1,3 +1,6 @@
+## 0.5.3
+- Fix bug on comparing nodes
+
 ## 0.5.2
 - Fix bug on comparing attributes and text nodes
 
