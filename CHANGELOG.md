@@ -1,3 +1,6 @@
+## 0.5.5
+- Preserve classes on adding new class (e.g. .added)
+
 ## 0.5.4
 - Fix bug on patch operations order
 
