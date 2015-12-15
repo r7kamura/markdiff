@@ -18,7 +18,7 @@ module Markdiff
         ::Diff::LCS.diff(before_elements, after_elements).flatten.each do |operation|
           type, position, element = *operation
           if type == "-"
-            before_elements[position] = "<del>#{element}</del>"
+            before_elements[position] = %(<del class="del">#{element}</del>)
           else
             before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
           end

@@ -7,10 +7,10 @@ module Markdiff
       def inserted_node
         if target_node.name == "li"
           target_node["class"] = "removed"
-          target_node.inner_html = "<del>#{target_node.inner_html}</del>"
+          target_node.inner_html = %(<del class="del">#{target_node.inner_html}</del>)
           target_node
         else
-          "<del>#{target_node}</del>"
+          %(<del class="del">#{target_node}</del>)
         end
       end
 
