@@ -1,3 +1,4 @@
+require "diff/lcs"
 require "nokogiri"
 require "markdiff/operations/add_child_operation"
 require "markdiff/operations/add_data_before_href_operation"
@@ -72,21 +73,6 @@ module Markdiff
 
     private
 
-    # @param [Nokogiri::XML::Node] node1
-    # @param [Nokogiri::XML::Node] node2
-    # @return [false, true] True if given two nodes can be treated as same
-    def check_exact_match(node1, node2)
-      if node1.text?
-        if node2.text?
-          node1.to_s == node2.to_s
-        else
-          false
-        end
-      else
-        node1.to_html.gsub("\n", "") == node2.to_html.gsub("\n", "")
-      end
-    end
-
     # 1. Create identity map and collect patches from descendants
     #   1-1. Detect exact-matched nodes
     #   1-2. Detect partial-matched nodes and recursively walk through its children
@@ -102,27 +88,13 @@ module Markdiff
       identity_map = {}
       inverted_identity_map = {}
 
-      # Exactly matching with index
-      before_node.children.each_with_index do |before_child, before_index|
-        after_child = after_node.children[before_index]
-        if !after_child.nil? && check_exact_match(before_child, after_child)
+      ::Diff::LCS.sdiff(before_node.children.map(&:to_s), after_node.children.map(&:to_s)).each do |element|
+        type, before, after = *element
+        if type == "="
+          before_child = before_node.children[before[0]]
+          after_child = after_node.children[after[0]]
           identity_map[before_child] = after_child
           inverted_identity_map[after_child] = before_child
-        end
-      end
-
-      # Exactly matching
-      before_node.children.each do |before_child|
-        next if identity_map[before_child]
-        after_node.children.each do |after_child|
-          case
-          when identity_map[before_child]
-            break
-          when inverted_identity_map[after_child]
-          when check_exact_match(before_child, after_child)
-            identity_map[before_child] = after_child
-            inverted_identity_map[after_child] = before_child
-          end
         end
       end
 
