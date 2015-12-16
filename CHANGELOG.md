@@ -1,3 +1,6 @@
+## 0.6.1
+- Fix patch order bug by making sort stable
+
 ## 0.6.0
 - Add .del class to all del elements
 
