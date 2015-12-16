@@ -304,5 +304,19 @@ RSpec.describe Markdiff::Differ do
         expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><ul><li class="a added"><ins>b</ins></li></ul></div>'
       end
     end
+
+    context "with change and appending" do
+      let(:after_string) do
+        "<p>b</p><p>c</p><p>d</p>"
+      end
+
+      let(:before_string) do
+        "<p>a</p>"
+      end
+
+      it "returns expected patched node" do
+        expect(subject.to_html).to eq '<div class="changed"><p><del class="del">a</del><ins>b</ins></p></div><ins><p>c</p></ins><ins><p>d</p></ins>'
+      end
+    end
   end
 end
