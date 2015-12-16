@@ -305,7 +305,7 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
-    context "with change and appending" do
+    context "with a sequence of AddChild operations" do
       let(:after_string) do
         "<p>b</p><p>c</p><p>d</p>"
       end
