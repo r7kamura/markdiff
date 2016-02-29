@@ -147,7 +147,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns expected patched node" do
-        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr><td>c</td><td><del class="del">d</del><ins>e</ins></td></tr></tbody></table></div>'
+        expect(subject.to_html.gsub("\n", "")).to eq '<div class="changed"><table><thead><tr><th>a</th><th>b</th></tr></thead><tbody><tr class="changed"><td>c</td><td><del class="del">d</del><ins>e</ins></td></tr></tbody></table></div>'
       end
     end
 

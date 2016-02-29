@@ -19,30 +19,30 @@ module Markdiff
         case operation
         when ::Markdiff::Operations::AddChildOperation
           operation.target_node.add_child(operation.inserted_node)
-          mark_li_as_changed(operation.target_node)
+          mark_li_or_tr_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddDataBeforeHrefOperation
           operation.target_node["data-before-href"] = operation.target_node["href"]
           operation.target_node["href"] = operation.after_href
-          mark_li_as_changed(operation.target_node)
+          mark_li_or_tr_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddDataBeforeTagNameOperation
           operation.target_node["data-before-tag-name"] = operation.target_node.name
           operation.target_node.name = operation.after_tag_name
-          mark_li_as_changed(operation.target_node)
+          mark_li_or_tr_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::AddPreviousSiblingOperation
           operation.target_node.add_previous_sibling(operation.inserted_node)
-          mark_li_as_changed(operation.target_node) if operation.target_node.name != "li"
+          mark_li_or_tr_as_changed(operation.target_node) if operation.target_node.name != "li" && operation.target_node.name != "tr"
           mark_top_level_node_as_changed(operation.target_node.parent)
         when ::Markdiff::Operations::RemoveOperation
           operation.target_node.replace(operation.inserted_node) if operation.target_node != operation.inserted_node
-          mark_li_as_changed(operation.target_node)
+          mark_li_or_tr_as_changed(operation.target_node)
           mark_top_level_node_as_changed(operation.target_node)
         when ::Markdiff::Operations::TextDiffOperation
           parent = operation.target_node.parent
           operation.target_node.replace(operation.inserted_node)
-          mark_li_as_changed(parent)
+          mark_li_or_tr_as_changed(parent)
           mark_top_level_node_as_changed(parent)
         end
       end
@@ -182,9 +182,9 @@ module Markdiff
     end
 
     # @param [Nokogiri::XML::Node] node
-    def mark_li_as_changed(node)
+    def mark_li_or_tr_as_changed(node)
       until node.parent.nil? || node.parent.fragment?
-        if node.name == "li"
+        if node.name == "li" || node.name == "tr"
           classes = node["class"].to_s.split(/\s/)
           unless classes.include?("added") || classes.include?("changed") || classes.include?("removed")
             node["class"] = (classes + ["changed"]).join(" ")
