@@ -1,3 +1,6 @@
+## 0.6.2
+Support tr.added and tr.deleted
+
 ## 0.6.1
 - Fix patch order bug by making sort stable
 
