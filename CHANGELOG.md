@@ -1,3 +1,7 @@
+## 0.6.3
+
+- Support diff-lcs v1.4+.
+
 ## 0.6.2
 
 - Support tr.added and tr.deleted.
