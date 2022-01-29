@@ -1,6 +1,7 @@
 # Markdiff
 
 [![test](https://github.com/r7kamura/markdiff/actions/workflows/test.yml/badge.svg)](https://github.com/r7kamura/markdiff/actions/workflows/test.yml)
+[![Gem Version](https://badge.fury.io/rb/markdiff.svg)](https://rubygems.org/gems/markdiff)
 
 Rendered Markdown differ.
 
