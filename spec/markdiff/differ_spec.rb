@@ -299,13 +299,13 @@ RSpec.describe Markdiff::Differ do
         "Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring."
       end
 
-      it 'returns the expected patched node' do
+      it "returns the expected patched node" do
         expect(subject.to_html)
           .to eq "<ins>Det</ins> Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring."
       end
     end
 
-    context 'with prepending node' do
+    context "with prepending node" do
       let(:after_string) do
         "<h2>added</h2>\n\n<h2>a</h2>\n\n<p>b</p>\n"
       end

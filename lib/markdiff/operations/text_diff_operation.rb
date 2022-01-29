@@ -15,19 +15,21 @@ module Markdiff
       def inserted_node
         before_elements = target_node.to_s.split(" ")
         after_elements = @after_node.to_s.split(" ")
-        deleted_positions = []
+        last_deleted_pos = nil
 
         ::Diff::LCS.diff(before_elements, after_elements).flatten(1).each do |operation|
           type, position, element = *operation
 
           if type == "-"
             before_elements[position] = %(<del class="del">#{element}</del>)
-            deleted_positions << position
+            last_deleted_pos = position
           elsif type == "+"
-            if deleted_positions.include?(position)
-              before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
+            insert = "<ins>#{element}</ins>"
+
+            if last_deleted_pos == position
+              before_elements[position] = "#{before_elements[position]}#{insert}"
             else
-              before_elements[position] = "<ins>#{element}</ins> #{before_elements[position]}"
+              before_elements[position] = "#{insert} #{before_elements[position]}"
             end
           else
             raise "Unhandled type: #{type}"
