@@ -287,7 +287,7 @@ RSpec.describe Markdiff::Differ do
 
       it "returns the expected patched text" do
         expect(subject.to_html)
-          .to eq "<div class='changed'><div>Kurset skal give de studerende <ins>TEST</ins> procesforståelse samt teoretisk og praktisk erfaring.</div></div>"
+          .to eq '<div class="changed"><div>Kurset skal give de studerende <ins>TEST</ins> procesforståelse samt teoretisk og praktisk erfaring.</div></div>'
       end
     end
 
