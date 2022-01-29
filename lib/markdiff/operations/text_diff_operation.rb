@@ -23,12 +23,14 @@ module Markdiff
           if type == "-"
             before_elements[position] = %(<del class="del">#{element}</del>)
             deleted_positions << position
-          else
+          elsif type == "+"
             if deleted_positions.include?(position)
               before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
             else
               before_elements[position] = "<ins>#{element}</ins> #{before_elements[position]}"
             end
+          else
+            raise "Unhandled type: #{type}"
           end
         end
 
