@@ -1,0 +1,42 @@
+PATH
+  remote: .
+  specs:
+    markdiff (0.6.3)
+      diff-lcs
+      nokogiri
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    diff-lcs (1.5.0)
+    nokogiri (1.13.1-x86_64-linux)
+      racc (~> 1.4)
+    racc (1.6.0)
+    rake (10.5.0)
+    redcarpet (3.3.3)
+    rspec (3.4.0)
+      rspec-core (~> 3.4.0)
+      rspec-expectations (~> 3.4.0)
+      rspec-mocks (~> 3.4.0)
+    rspec-core (3.4.4)
+      rspec-support (~> 3.4.0)
+    rspec-expectations (3.4.0)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-mocks (3.4.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.4.0)
+    rspec-support (3.4.1)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  bundler
+  markdiff!
+  rake (~> 10.0)
+  redcarpet (= 3.3.3)
+  rspec (= 3.4.0)
+
+BUNDLED WITH
+   2.3.6
