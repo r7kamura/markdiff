@@ -277,7 +277,35 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
-    context "with prepending node" do
+    context "with inserted word in the middle of the text" do
+      let(:after_string) do
+        "<div>Kurset skal give de studerende TEST procesforståelse samt teoretisk og praktisk erfaring.</div>"
+      end
+      let(:before_string) do
+        "<div>Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.</div>"
+      end
+
+      it "returns the expected patched text" do
+        expect(subject.to_html)
+          .to eq "<div class='changed'><div>Kurset skal give de studerende <ins>TEST</ins> procesforståelse samt teoretisk og praktisk erfaring.</div></div>"
+      end
+    end
+
+    context 'with text after change list' do
+      let(:after_string) do
+        'Det Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+      end
+      let(:before_string) do
+        'Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+      end
+
+      it 'returns the expected patched node' do
+        expect(subject.to_html)
+          .to eq '<ins>Det</ins> Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+      end
+    end
+
+    context 'with prepending node' do
       let(:after_string) do
         "<h2>added</h2>\n\n<h2>a</h2>\n\n<p>b</p>\n"
       end
