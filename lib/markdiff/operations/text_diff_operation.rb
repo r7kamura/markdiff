@@ -16,8 +16,10 @@ module Markdiff
       def inserted_node
         before_elements = target_node.to_s.split(' ')
         after_elements = @after_node.to_s.split(' ')
-        ::Diff::LCS.diff(before_elements, after_elements).flatten(1).each do |operation|
+        ::Diff::LCS.diff(before_elements, after_elements).flatten(1).map do |operation|
           type, position, element = *operation
+          [position, type, element]
+        end.sort.each do |position, type,element|
           if type == '-'
             before_elements[position] = %(<del class="del">#{element}</del>)
           elsif type == '+'

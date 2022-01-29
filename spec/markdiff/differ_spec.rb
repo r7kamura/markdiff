@@ -291,17 +291,17 @@ RSpec.describe Markdiff::Differ do
       end
     end
 
-    context 'with text after change list' do
+    context "with added word at the beginning" do
       let(:after_string) do
-        'Det Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+        "Det Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring."
       end
       let(:before_string) do
-        'Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+        "Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring."
       end
 
       it 'returns the expected patched node' do
         expect(subject.to_html)
-          .to eq '<ins>Det</ins> Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring.'
+          .to eq "<ins>Det</ins> Kurset skal give de studerende procesforståelse samt teoretisk og praktisk erfaring."
       end
     end
 
