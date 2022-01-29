@@ -1,6 +1,7 @@
-require "diff/lcs"
-require "nokogiri"
-require "markdiff/operations/base"
+require 'diff/lcs'
+require 'nokogiri'
+require 'markdiff/operations/base'
+require 'pry'
 
 module Markdiff
   module Operations
@@ -13,17 +14,19 @@ module Markdiff
 
       # @return [Nokogiri::XML::Node]
       def inserted_node
-        before_elements = target_node.to_s.split(" ")
-        after_elements = @after_node.to_s.split(" ")
+        before_elements = target_node.to_s.split(' ')
+        after_elements = @after_node.to_s.split(' ')
         ::Diff::LCS.diff(before_elements, after_elements).flatten(1).each do |operation|
           type, position, element = *operation
-          if type == "-"
+          if type == '-'
             before_elements[position] = %(<del class="del">#{element}</del>)
+          elsif type == '+'
+            before_elements[position] = "<ins>#{element}</ins> #{before_elements[position]}"
           else
-            before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
+            raise "ubhandled #{operation}"
           end
         end
-        ::Nokogiri::HTML.fragment(before_elements.join(" "))
+        ::Nokogiri::HTML.fragment(before_elements.join(' '))
       end
 
       def priority
