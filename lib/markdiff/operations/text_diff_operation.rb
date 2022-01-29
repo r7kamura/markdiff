@@ -27,7 +27,7 @@ module Markdiff
             insert = "<ins>#{element}</ins>"
 
             if last_deleted_pos == position
-              before_elements[position] = "#{before_elements[position]}#{insert}"
+              before_elements[position] = "#{before_elements[position]} #{insert}"
             else
               before_elements[position] = "#{insert} #{before_elements[position]}"
             end
