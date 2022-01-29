@@ -1,3 +1,9 @@
+# Changelog
+
+## Unreleased
+
+- Fixed replaces shown wrongly.
+
 ## 0.6.3
 
 - Support diff-lcs v1.4+.
