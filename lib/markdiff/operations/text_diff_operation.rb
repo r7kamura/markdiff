@@ -15,14 +15,27 @@ module Markdiff
       def inserted_node
         before_elements = target_node.to_s.split(" ")
         after_elements = @after_node.to_s.split(" ")
+        last_deleted_pos = nil
+
         ::Diff::LCS.diff(before_elements, after_elements).flatten(1).each do |operation|
           type, position, element = *operation
+
           if type == "-"
             before_elements[position] = %(<del class="del">#{element}</del>)
+            last_deleted_pos = position
+          elsif type == "+"
+            insert = "<ins>#{element}</ins>"
+
+            if last_deleted_pos == position
+              before_elements[position] = "#{before_elements[position]}#{insert}"
+            else
+              before_elements[position] = "#{insert}#{before_elements[position]}"
+            end
           else
-            before_elements[position] = "#{before_elements[position]}<ins>#{element}</ins>"
+            raise "Unhandled type: #{type}"
           end
         end
+
         ::Nokogiri::HTML.fragment(before_elements.join(" "))
       end
 
