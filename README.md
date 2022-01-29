@@ -1,4 +1,7 @@
-# Markdiff [![Build Status](https://travis-ci.org/r7kamura/markdiff.svg)](https://travis-ci.org/r7kamura/markdiff)
+# Markdiff
+
+[![test](https://github.com/r7kamura/markdiff/actions/workflows/test.yml/badge.svg)](https://github.com/r7kamura/markdiff/actions/workflows/test.yml)
+
 Rendered Markdown differ.
 
 ## Usage
