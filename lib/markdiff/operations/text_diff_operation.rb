@@ -31,12 +31,10 @@ module Markdiff
             before_elements[position] = %(<del class="del">#{element}</del>)
             last_deleted_pos = position
           elsif type == "+"
-            insert = "<ins>#{element}</ins>"
-
             if last_deleted_pos == position
-              before_elements[position] = "#{before_elements[position]}#{insert}"
+              before_elements[position] = %(#{before_elements[position]}<ins class="ins ins-after">#{element}</ins>)
             else
-              before_elements[position] = "#{insert}#{before_elements[position]}"
+              before_elements[position] = %(<ins class="ins ins-before">#{element}</ins>#{before_elements[position]})
             end
           else
             raise "Unhandled type: #{type}"
