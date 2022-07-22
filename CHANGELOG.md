@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.7.0
+
 - Fixed replaces shown wrongly.
 
 ## 0.6.3
