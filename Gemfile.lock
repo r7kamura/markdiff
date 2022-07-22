@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    markdiff (0.6.3)
+    markdiff (0.7.0)
       diff-lcs
       nokogiri
 
@@ -9,7 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.5.0)
-    nokogiri (1.13.1-x86_64-linux)
+    nokogiri (1.13.7-x86_64-linux)
       racc (~> 1.4)
     racc (1.6.0)
     rake (10.5.0)
