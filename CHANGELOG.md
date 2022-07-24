@@ -6,6 +6,10 @@
 
 - Add class attributes to ins element: `.ins.ins-before` or `.ins.ins-after`.
 
+### Fixed
+
+- Fix issue on insertion and deletion on same position.
+
 ## 0.7.0
 
 ### Fixed
