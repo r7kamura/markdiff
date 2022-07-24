@@ -352,7 +352,7 @@ RSpec.describe Markdiff::Differ do
       let(:before_string) { "Kurset skal give de studerende procesforståelse" }
 
       it "returns expected patched node" do
-        expect(subject.to_html).to eq '<ins>JEG</ins>Kurset <del class="del">skal</del><ins>HEDDER</ins> give de studerende procesforståelse'
+        expect(subject.to_html).to eq '<ins class="ins ins-before">JEG</ins>Kurset <del class="del">skal</del><ins class="ins ins-after">HEDDER</ins> give de studerende procesforståelse'
       end
     end
   end
