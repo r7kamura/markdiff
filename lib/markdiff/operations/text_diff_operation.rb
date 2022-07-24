@@ -17,7 +17,14 @@ module Markdiff
         after_elements = @after_node.to_s.split(" ")
         last_deleted_pos = nil
 
-        ::Diff::LCS.diff(before_elements, after_elements).flatten(1).each do |operation|
+
+        ::Diff::LCS.diff(before_elements, after_elements)
+          .flatten(1)
+          .sort_by do |diff|
+            type, position, element = *diff
+            [position, type == "-" ? 0 : 1]
+          end
+          .each do |operation|
           type, position, element = *operation
 
           if type == "-"
