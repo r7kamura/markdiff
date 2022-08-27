@@ -13,35 +13,39 @@ module Markdiff
 
       # @return [Nokogiri::XML::Node]
       def inserted_node
-        before_elements = target_node.to_s.split(" ")
-        after_elements = @after_node.to_s.split(" ")
-        last_deleted_pos = nil
-
+        before_elements = target_node.to_s.split(' ')
+        after_elements = @after_node.to_s.split(' ')
 
         ::Diff::LCS.diff(before_elements, after_elements)
-          .flatten(1)
-          .sort_by do |diff|
-            type, position, element = *diff
-            [position, type == "-" ? 0 : 1]
-          end
-          .each do |operation|
-          type, position, element = *operation
+          .each do |grouping|
+            additions = grouping.select { |action, pos, _| action == '+' }
+            deletions = grouping.select { |action, pos, _| action == '-' }
 
-          if type == "-"
-            before_elements[position] = %(<del class="del">#{element}</del>)
-            last_deleted_pos = position
-          elsif type == "+"
-            if last_deleted_pos == position
-              before_elements[position] = %(#{before_elements[position]}<ins class="ins ins-after">#{element}</ins>)
+          last_pos = nil
+          additions.each do |_action, pos, _|
+            raise "Error" if last_pos && last_pos != pos-1
+            last_pos = pos
+          end
+
+
+          last_pos = nil
+          deletions.each do |_action, pos, _|
+            raise "Error" if last_pos && last_pos != pos-1
+            last_pos = pos
+          end
+
+          before_elements[deletions.first.position] = %(<del class="del">#{deletions.map(&:element).join(" ")}</del>) if deletions.length.positive?
+
+          if additions.length.positive?
+            if deletions.first&.position == additions.first.position
+              before_elements[additions.first.position] = %(#{before_elements[additions.first.position]}<ins class="ins ins-after">#{additions.map(&:element).join(" ")}</ins>)
             else
-              before_elements[position] = %(<ins class="ins ins-before">#{element}</ins>#{before_elements[position]})
+              before_elements[additions.first.position] = %(<ins class="ins ins-before">#{additions.map(&:element).join(" ")}</ins>#{before_elements[additions.first.position]})
             end
-          else
-            raise "Unhandled type: #{type}"
           end
         end
 
-        ::Nokogiri::HTML.fragment(before_elements.join(" "))
+        ::Nokogiri::HTML.fragment(before_elements.join(' '))
       end
 
       def priority
