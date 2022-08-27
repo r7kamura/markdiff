@@ -35,6 +35,9 @@ module Markdiff
           end
 
           before_elements[deletions.first.position] = %(<del class="del">#{deletions.map(&:element).join(" ")}</del>) if deletions.length.positive?
+          deletions[1..]&.each { |action, position, _| before_elements[position] = "" }
+
+          pp "additions are: #{additions.map(&:element)}"
 
           if additions.length.positive?
             if deletions.first&.position == additions.first.position
@@ -45,7 +48,7 @@ module Markdiff
           end
         end
 
-        ::Nokogiri::HTML.fragment(before_elements.join(' '))
+        ::Nokogiri::HTML.fragment(before_elements.reject(&:empty?).join(' '))
       end
 
       def priority

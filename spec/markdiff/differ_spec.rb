@@ -366,7 +366,7 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns the expected patched note" do
-        expect(subject.to_html).to eq 'Der gælder for specialer udført ved <del class="del">Science</del><ins class="ins ins-after">Faculty</ins> <del class="del">&amp;</del><ins class="ins ins-after">of</ins> <del class="del">Technology,</del><ins class="ins ins-after">Natural</ins> <ins class="ins ins-before">Sciences</ins>Et <ins class="ins ins-before">og</ins>Universitet. <ins class="ins ins-before">Faculty of Technical Sciences</ins>Hovedvejleder har formelle ansvar for den faglige vejledning.'
+        expect(subject.to_html).to eq 'Der gælder for specialer udført ved <del class="del">Science &amp; Technology,</del><ins class="ins ins-after">Faculty of Natural Sciences og Faculty of Technical Sciences,</ins> Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning.'
       end
     end
   end
