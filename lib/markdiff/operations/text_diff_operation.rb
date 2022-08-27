@@ -18,34 +18,19 @@ module Markdiff
 
         ::Diff::LCS.diff(before_elements, after_elements)
           .each do |grouping|
-            additions = grouping.select { |action, pos, _| action == '+' }
-            deletions = grouping.select { |action, pos, _| action == '-' }
+            insertions = grouping.select { |diff| diff.action == '+' }
+            deletions = grouping.select { |diff| diff.action == '-' }
+            deletion_start = deletions.first&.position
+            insertion_start = insertions.first&.position
 
-          last_pos = nil
-          additions.each do |_action, pos, _|
-            raise "Error" if last_pos && last_pos != pos-1
-            last_pos = pos
-          end
+            before_elements[deletion_start] = %(<del class="del">#{deletions.map(&:element).join(" ")}</del>) if deletion_start
+            deletions[1..]&.each { |diff| before_elements[diff.position] = "" }
 
-
-          last_pos = nil
-          deletions.each do |_action, pos, _|
-            raise "Error" if last_pos && last_pos != pos-1
-            last_pos = pos
-          end
-
-          before_elements[deletions.first.position] = %(<del class="del">#{deletions.map(&:element).join(" ")}</del>) if deletions.length.positive?
-          deletions[1..]&.each { |action, position, _| before_elements[position] = "" }
-
-          pp "additions are: #{additions.map(&:element)}"
-
-          if additions.length.positive?
-            if deletions.first&.position == additions.first.position
-              before_elements[additions.first.position] = %(#{before_elements[additions.first.position]}<ins class="ins ins-after">#{additions.map(&:element).join(" ")}</ins>)
+            before_elements[insertion_start] = if deletion_start == insertion_start
+              %(#{before_elements[insertion_start]}<ins class="ins ins-after">#{insertions.map(&:element).join(" ")}</ins>)
             else
-              before_elements[additions.first.position] = %(<ins class="ins ins-before">#{additions.map(&:element).join(" ")}</ins>#{before_elements[additions.first.position]})
-            end
-          end
+              %(<ins class="ins ins-before">#{insertions.map(&:element).join(" ")}</ins>#{before_elements[insertion_start]})
+            end if insertion_start
         end
 
         ::Nokogiri::HTML.fragment(before_elements.reject(&:empty?).join(' '))
