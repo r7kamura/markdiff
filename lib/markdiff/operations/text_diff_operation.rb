@@ -33,7 +33,7 @@ module Markdiff
             end if insertion_start
         end
 
-        ::Nokogiri::HTML.fragment(before_elements.reject(&:empty?).join(' '))
+        ::Nokogiri::HTML.fragment(before_elements.reject(&:nil?).join(' '))
       end
 
       def priority
