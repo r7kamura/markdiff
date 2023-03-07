@@ -16,24 +16,22 @@ module Markdiff
         before_elements = target_node.to_s.split(' ')
         after_elements = @after_node.to_s.split(' ')
 
-        ::Diff::LCS.diff(before_elements, after_elements)
-          .each do |grouping|
-            insertions = grouping.select { |diff| diff.action == '+' }
-            deletions = grouping.select { |diff| diff.action == '-' }
-            deletion_start = deletions.first&.position
-            insertion_start = insertions.first&.position
+        groupings = ::Diff::LCS.sdiff(before_elements, after_elements).slice_when {|prev, cur| prev.action != cur.action }
 
-            before_elements[deletion_start] = %(<del class="del">#{deletions.map(&:element).join(" ")}</del>) if deletion_start
-            deletions[1..]&.each { |diff| before_elements[diff.position] = "" }
-
-            before_elements[insertion_start] = if deletion_start == insertion_start
-              %(#{before_elements[insertion_start]}<ins class="ins ins-after">#{insertions.map(&:element).join(" ")}</ins>)
-            else
-              %(<ins class="ins ins-before">#{insertions.map(&:element).join(" ")}</ins>#{before_elements[insertion_start]})
-            end if insertion_start
+        output = groupings.map do |grouping|
+          case grouping.first.action
+          when "="
+            grouping.map(&:new_element).join(" ")
+          when "-"
+            "<del class=\"del\">#{grouping.map(&:old_element).join(" ")}</del>"
+          when "+"
+            "<ins class=\"ins ins-before\">#{grouping.map(&:new_element).join(" ")}</ins>"
+          when "!"
+            "<del class=\"del\">#{grouping.map(&:old_element).join(" ")}</del><ins class=\"ins ins-after\">#{grouping.map(&:new_element).join(" ")}</ins>"
+          end
         end
 
-        ::Nokogiri::HTML.fragment(before_elements.reject(&:nil?).join(' '))
+        ::Nokogiri::HTML.fragment(output.join(' '))
       end
 
       def priority
