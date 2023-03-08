@@ -17,23 +17,28 @@ module Markdiff
         after_elements = @after_node.to_s.split(' ')
         last_operation = nil
 
-        groupings = ::Diff::LCS.sdiff(before_elements, after_elements).slice_when {|prev, cur| prev.action != cur.action }
+        groupings = ::Diff::LCS.sdiff(before_elements, after_elements)
+          .slice_when { |prev, cur| prev.action != cur.action }
 
         output = groupings.map do |grouping|
-          response = case grouping.first.action
-          when "="
-            grouping.map(&:new_element).join(" ")
-          when "-"
-            %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del>)
-          when "+"
-            %(<ins class="ins ins-before">#{grouping.map(&:new_element).join(" ")}</ins>)
-          when "!"
-            %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del><ins class="ins ins-after">#{grouping.map(&:new_element).join(" ")}</ins>)
-        end
+          action = grouping.first.action
+
+          response = case action
+            when "="
+              grouping.map(&:new_element).join(" ")
+            when "-"
+              %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del>)
+            when "+"
+              %(<ins class="ins ins-before">#{grouping.map(&:new_element).join(" ")}</ins>)
+            when "!"
+              %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del><ins class="ins ins-after">#{grouping.map(&:new_element).join(" ")}</ins>)
+            else
+              raise "Unknown action #{action}"
+          end
 
           response = " #{response}" if last_operation && last_operation != '+'
 
-          last_operation = grouping.first.action
+          last_operation = action
 
           response
         end
