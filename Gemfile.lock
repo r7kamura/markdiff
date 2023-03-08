@@ -12,21 +12,21 @@ GEM
     nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     racc (1.6.2)
-    rake (10.5.0)
-    redcarpet (3.3.3)
-    rspec (3.4.0)
-      rspec-core (~> 3.4.0)
-      rspec-expectations (~> 3.4.0)
-      rspec-mocks (~> 3.4.0)
-    rspec-core (3.4.4)
-      rspec-support (~> 3.4.0)
-    rspec-expectations (3.4.0)
+    rake (13.0.6)
+    redcarpet (3.6.0)
+    rspec (3.12.0)
+      rspec-core (~> 3.12.0)
+      rspec-expectations (~> 3.12.0)
+      rspec-mocks (~> 3.12.0)
+    rspec-core (3.12.1)
+      rspec-support (~> 3.12.0)
+    rspec-expectations (3.12.2)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-mocks (3.4.1)
+      rspec-support (~> 3.12.0)
+    rspec-mocks (3.12.3)
       diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.4.0)
-    rspec-support (3.4.1)
+      rspec-support (~> 3.12.0)
+    rspec-support (3.12.0)
 
 PLATFORMS
   x86_64-linux
@@ -34,9 +34,9 @@ PLATFORMS
 DEPENDENCIES
   bundler
   markdiff!
-  rake (~> 10.0)
-  redcarpet (= 3.3.3)
-  rspec (= 3.4.0)
+  rake
+  redcarpet
+  rspec
 
 BUNDLED WITH
    2.3.6
