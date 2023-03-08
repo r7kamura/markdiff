@@ -365,25 +365,12 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns the expected patched note" do
-        expect(subject.to_html).to eq 'Der gælder for specialer udført ved <del class="del">Science &amp; Technology,</del><ins class="ins ins-after">Faculty of Natural</ins> <ins class="ins ins-before">Sciences og Faculty of Technical Sciences,</ins>Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning.'
-      end
-    end
-
-    context "with even more changes" do
-      let(:after_string) do
-        "De matematiske begreber i kurset kommer først og fremmest til at blive underbygget af små eksperimenter i programmeringssprogene php, Sage og ruby."
-      end
-      let(:before_string) do
-        "De matematiske slettet begreber i kurset kommer først og fremmest til at blive underbygget af små eksperimenter i programmeringssprogene Sage og python."
-      end
-
-      it "returns the expected patched note" do
         expect(subject.to_html)
-          .to eq 'De matematiske <del class="del">slettet</del> begreber i kurset kommer først og fremmest til at blive underbygget af små eksperimenter i programmeringssprogene <ins class="ins ins-before">php,</ins>Sage og <del class="del">python.</del><ins class="ins ins-after">ruby.</ins>'
+          .to eq 'Der gælder for specialer udført ved <del class="del">Science &amp; Technology,</del><ins class="ins ins-after">Faculty of Natural</ins> <ins class="ins ins-before">Sciences og Faculty of Technical Sciences,</ins>Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning.'
       end
     end
 
-    context "with weird changes" do
+    context "with a long sentence" do
       let(:after_string) do
         "De matematiske begreber kommer først og fremmest i kurset vil blive underbygget af små eksperimenter i programmeringssprogene php, Sage og ruby."
       end
@@ -392,7 +379,8 @@ RSpec.describe Markdiff::Differ do
       end
 
       it "returns the expected patched note" do
-        expect(subject.to_html).to eq 'De matematiske <del class="del">asd</del> begreber <ins class="ins ins-before">kommer først og fremmest</ins>i kurset vil blive underbygget af små eksperimenter i programmeringssprogene <ins class="ins ins-before">php,</ins>Sage og <del class="del">python.</del><ins class="ins ins-after">ruby.</ins>'
+        expect(subject.to_html)
+          .to eq 'De matematiske <del class="del">asd</del> begreber <ins class="ins ins-before">kommer først og fremmest</ins>i kurset vil blive underbygget af små eksperimenter i programmeringssprogene <ins class="ins ins-before">php,</ins>Sage og <del class="del">python.</del><ins class="ins ins-after">ruby.</ins>'
       end
     end
   end
