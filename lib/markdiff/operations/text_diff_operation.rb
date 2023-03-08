@@ -24,11 +24,11 @@ module Markdiff
           when "="
             grouping.map(&:new_element).join(" ")
           when "-"
-            "<del class=\"del\">#{grouping.map(&:old_element).join(" ")}</del>"
+            %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del>)
           when "+"
-            "<ins class=\"ins ins-before\">#{grouping.map(&:new_element).join(" ")}</ins>"
+            %(<ins class="ins ins-before">#{grouping.map(&:new_element).join(" ")}</ins>)
           when "!"
-            "<del class=\"del\">#{grouping.map(&:old_element).join(" ")}</del><ins class=\"ins ins-after\">#{grouping.map(&:new_element).join(" ")}</ins>"
+            %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del><ins class="ins ins-after">#{grouping.map(&:new_element).join(" ")}</ins>)
         end
 
           response = " #{response}" if last_operation && last_operation != '+'
