@@ -15,11 +15,12 @@ module Markdiff
       def inserted_node
         before_elements = target_node.to_s.split(' ')
         after_elements = @after_node.to_s.split(' ')
+        last_operation = nil
 
         groupings = ::Diff::LCS.sdiff(before_elements, after_elements).slice_when {|prev, cur| prev.action != cur.action }
 
         output = groupings.map do |grouping|
-          case grouping.first.action
+          response = case grouping.first.action
           when "="
             grouping.map(&:new_element).join(" ")
           when "-"
@@ -28,10 +29,16 @@ module Markdiff
             "<ins class=\"ins ins-before\">#{grouping.map(&:new_element).join(" ")}</ins>"
           when "!"
             "<del class=\"del\">#{grouping.map(&:old_element).join(" ")}</del><ins class=\"ins ins-after\">#{grouping.map(&:new_element).join(" ")}</ins>"
-          end
         end
 
-        ::Nokogiri::HTML.fragment(output.join(' '))
+          response = " #{response}" if last_operation && last_operation != '+'
+
+          last_operation = grouping.first.action
+
+          response
+        end
+
+        ::Nokogiri::HTML.fragment(output.join(''))
       end
 
       def priority
