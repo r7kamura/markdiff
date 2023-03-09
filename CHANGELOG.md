@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.8.0
+
 ### Changed
 
 - Add class attributes to ins element: `.ins.ins-before` or `.ins.ins-after`.

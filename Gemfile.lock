@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    markdiff (0.7.0)
+    markdiff (0.8.0)
       diff-lcs
       nokogiri
 
