@@ -13,35 +13,37 @@ module Markdiff
 
       # @return [Nokogiri::XML::Node]
       def inserted_node
-        before_elements = target_node.to_s.split(" ")
-        after_elements = @after_node.to_s.split(" ")
-        last_deleted_pos = nil
+        before_elements = target_node.to_s.split(' ')
+        after_elements = @after_node.to_s.split(' ')
+        last_operation = nil
 
+        groupings = ::Diff::LCS.sdiff(before_elements, after_elements)
+          .slice_when { |prev, cur| prev.action != cur.action }
 
-        ::Diff::LCS.diff(before_elements, after_elements)
-          .flatten(1)
-          .sort_by do |diff|
-            type, position, element = *diff
-            [position, type == "-" ? 0 : 1]
-          end
-          .each do |operation|
-          type, position, element = *operation
+        output = groupings.map do |grouping|
+          action = grouping.first.action
 
-          if type == "-"
-            before_elements[position] = %(<del class="del">#{element}</del>)
-            last_deleted_pos = position
-          elsif type == "+"
-            if last_deleted_pos == position
-              before_elements[position] = %(#{before_elements[position]}<ins class="ins ins-after">#{element}</ins>)
+          response = case action
+            when "="
+              grouping.map(&:new_element).join(" ")
+            when "-"
+              %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del>)
+            when "+"
+              %(<ins class="ins ins-before">#{grouping.map(&:new_element).join(" ")}</ins>)
+            when "!"
+              %(<del class="del">#{grouping.map(&:old_element).join(" ")}</del><ins class="ins ins-after">#{grouping.map(&:new_element).join(" ")}</ins>)
             else
-              before_elements[position] = %(<ins class="ins ins-before">#{element}</ins>#{before_elements[position]})
-            end
-          else
-            raise "Unhandled type: #{type}"
+              raise "Unknown action #{action}"
           end
+
+          response = " #{response}" if last_operation && last_operation != '+'
+
+          last_operation = action
+
+          response
         end
 
-        ::Nokogiri::HTML.fragment(before_elements.join(" "))
+        ::Nokogiri::HTML.fragment(output.join(''))
       end
 
       def priority

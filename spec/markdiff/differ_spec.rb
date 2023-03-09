@@ -351,8 +351,36 @@ RSpec.describe Markdiff::Differ do
       let(:after_string) { "JEG HEDDER Kurset give de studerende procesforståelse" }
       let(:before_string) { "Kurset skal give de studerende procesforståelse" }
 
-      it "returns expected patched node" do
-        expect(subject.to_html).to eq '<ins class="ins ins-before">JEG</ins>Kurset <del class="del">skal</del><ins class="ins ins-after">HEDDER</ins> give de studerende procesforståelse'
+      it 'returns expected patched node' do
+        expect(subject.to_html).to eq '<ins class="ins ins-before">JEG HEDDER</ins>Kurset <del class="del">skal</del> give de studerende procesforståelse'
+      end
+    end
+
+    context "with lots of changes" do
+      let(:after_string) do
+        "Der gælder for specialer udført ved Faculty of Natural Sciences og Faculty of Technical Sciences, Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning."
+      end
+      let(:before_string) do
+        "Der gælder for specialer udført ved Science & Technology, Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning."
+      end
+
+      it "returns the expected patched note" do
+        expect(subject.to_html)
+          .to eq 'Der gælder for specialer udført ved <del class="del">Science &amp; Technology,</del><ins class="ins ins-after">Faculty of Natural</ins> <ins class="ins ins-before">Sciences og Faculty of Technical Sciences,</ins>Et Universitet. Hovedvejleder har det formelle ansvar for den faglige vejledning.'
+      end
+    end
+
+    context "with a long sentence" do
+      let(:after_string) do
+        "De matematiske begreber kommer først og fremmest i kurset vil blive underbygget af små eksperimenter i programmeringssprogene php, Sage og ruby."
+      end
+      let(:before_string) do
+        "De matematiske asd begreber i kurset vil blive underbygget af små eksperimenter i programmeringssprogene Sage og python."
+      end
+
+      it "returns the expected patched note" do
+        expect(subject.to_html)
+          .to eq 'De matematiske <del class="del">asd</del> begreber <ins class="ins ins-before">kommer først og fremmest</ins>i kurset vil blive underbygget af små eksperimenter i programmeringssprogene <ins class="ins ins-before">php,</ins>Sage og <del class="del">python.</del><ins class="ins ins-after">ruby.</ins>'
       end
     end
   end
