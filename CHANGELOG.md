@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fix issue on insertion and deletion on same position.
+- Fix issue with long sentences.
 
 ## 0.7.0
 
