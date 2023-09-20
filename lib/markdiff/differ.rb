@@ -100,13 +100,17 @@ module Markdiff
       end
 
       # Partial matching
-      before_node.children.each do |before_child|
-        if identity_map[before_child]
-          next
-        end
+
+      before_node.children.each_with_index do |before_child, index|
+        next if identity_map[before_child]
+
+        next_match = before_node.children[index..].find { |child| identity_map[child] }
+
         after_node.children.each do |after_child|
           case
           when identity_map[before_child]
+            break
+          when next_match && inverted_identity_map[after_child] == next_match
             break
           when inverted_identity_map[after_child]
           when before_child.text?
