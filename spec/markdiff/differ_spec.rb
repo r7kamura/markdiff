@@ -393,20 +393,23 @@ RSpec.describe Markdiff::Differ do
       end
 
       it 'diffs a long list' do
-        expect(subject.to_html).to eq '<div class="changed"><ul>
-<li>Tilstandsligninger for gasser, herunder ikke-idealitet</li>
-<li class="removed"><del class="del">Kinetisk gasteori</del></li>
-<li>Termodynamiske nøglebegreber (herunder enthalpi, entropi, Gibbs energi, kemisk potentiale, varmekapacitet)</li>
-<li>Faseligevægte og fasediagrammer</li>
-<li>Opløselighed og kolligative egenskaber</li>
-<li>Kemisk ligevægt, herunder aktivitetsbegrebet og sammenhæng med Gibbs energi</li>
-<li>Elektrokemiske nøglebegreber (herunder standardpotentialer, Nernst-ligningen)</li>
-<li class="changed">Kinetik (herunder reaktionsorden, temperaturafhængighed og Arrhenius-ligningen, <del class="del">elementarreaktioner)</del><ins class="ins ins-after">elementarreaktioner,</ins> <ins class="ins ins-before">katalyse)</ins>
-</li>
-<li class="removed"><del class="del">Katalyse</del></li>
-<li>Systematisk opstilling af flowdiagram (herunder frihedsgradsanalyse og opstilling af stofbalancer)</li>
-<li class="changed">Der arbejdes systematisk med forskellige beregninger på kemitekniske processer, herunder beregninger af manglende data <ins class="ins ins-before">ud</ins>fra de opstillede stofbalancer samt energibalancer for både ikke-reaktive og reaktive systemer</li>
-</ul></div>'
+        expect(subject.to_html)
+          .to eq <<~STRING.strip
+            <div class="changed"><ul>
+            <li>Tilstandsligninger for gasser, herunder ikke-idealitet</li>
+            <li class="removed"><del class="del">Kinetisk gasteori</del></li>
+            <li>Termodynamiske nøglebegreber (herunder enthalpi, entropi, Gibbs energi, kemisk potentiale, varmekapacitet)</li>
+            <li>Faseligevægte og fasediagrammer</li>
+            <li>Opløselighed og kolligative egenskaber</li>
+            <li>Kemisk ligevægt, herunder aktivitetsbegrebet og sammenhæng med Gibbs energi</li>
+            <li>Elektrokemiske nøglebegreber (herunder standardpotentialer, Nernst-ligningen)</li>
+            <li class="changed">Kinetik (herunder reaktionsorden, temperaturafhængighed og Arrhenius-ligningen, <del class="del">elementarreaktioner)</del><ins class="ins ins-after">elementarreaktioner,</ins> <ins class="ins ins-before">katalyse)</ins>
+            </li>
+            <li class="removed"><del class="del">Katalyse</del></li>
+            <li>Systematisk opstilling af flowdiagram (herunder frihedsgradsanalyse og opstilling af stofbalancer)</li>
+            <li class="changed">Der arbejdes systematisk med forskellige beregninger på kemitekniske processer, herunder beregninger af manglende data <ins class="ins ins-before">ud</ins>fra de opstillede stofbalancer samt energibalancer for både ikke-reaktive og reaktive systemer</li>
+            </ul></div>
+          STRING
       end
     end
   end
