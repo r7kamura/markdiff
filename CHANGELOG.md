@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.8.1
+
 ### Fixed
 
 - Fix issue with diffs between blocks of matches.
