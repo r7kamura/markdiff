@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Fix issue with diffs between blocks of matches
+
 ## 0.8.0
 
 ### Changed
