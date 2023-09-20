@@ -383,5 +383,31 @@ RSpec.describe Markdiff::Differ do
           .to eq 'De matematiske <del class="del">asd</del> begreber <ins class="ins ins-before">kommer først og fremmest</ins>i kurset vil blive underbygget af små eksperimenter i programmeringssprogene <ins class="ins ins-before">php,</ins>Sage og <del class="del">python.</del><ins class="ins ins-after">ruby.</ins>'
       end
     end
+
+    context 'with list items' do
+      let(:before_string) do
+        '<ul><li>Tilstandsligninger for gasser, herunder ikke-idealitet</li><li>Kinetisk gasteori</li><li>Termodynamiske nøglebegreber (herunder enthalpi, entropi, Gibbs energi, kemisk potentiale, varmekapacitet)</li><li>Faseligevægte og fasediagrammer</li><li>Opløselighed og kolligative egenskaber</li><li>Kemisk ligevægt, herunder aktivitetsbegrebet og sammenhæng med Gibbs energi</li><li>Elektrokemiske nøglebegreber (herunder standardpotentialer, Nernst-ligningen)</li><li>Kinetik (herunder reaktionsorden, temperaturafhængighed og Arrhenius-ligningen, elementarreaktioner)</li><li>Katalyse</li><li>Systematisk opstilling af flowdiagram (herunder frihedsgradsanalyse og opstilling af stofbalancer)</li><li>Der arbejdes systematisk med forskellige beregninger på kemitekniske processer, herunder beregninger af manglende data fra de opstillede stofbalancer samt energibalancer for både ikke-reaktive og reaktive systemer</li></ul>'
+      end
+      let(:after_string) do
+        '<ul><li>Tilstandsligninger for gasser, herunder ikke-idealitet</li><li>Termodynamiske nøglebegreber (herunder enthalpi, entropi, Gibbs energi, kemisk potentiale, varmekapacitet)</li><li>Faseligevægte og fasediagrammer</li><li>Opløselighed og kolligative egenskaber</li><li>Kemisk ligevægt, herunder aktivitetsbegrebet og sammenhæng med Gibbs energi</li><li>Elektrokemiske nøglebegreber (herunder standardpotentialer, Nernst-ligningen)</li><li>Kinetik (herunder reaktionsorden, temperaturafhængighed og Arrhenius-ligningen, elementarreaktioner, katalyse)</li><li>Systematisk opstilling af flowdiagram (herunder frihedsgradsanalyse og opstilling af stofbalancer)</li><li>Der arbejdes systematisk med forskellige beregninger på kemitekniske processer, herunder beregninger af manglende data ud fra de opstillede stofbalancer samt energibalancer for både ikke-reaktive og reaktive systemer</li></ul>'
+      end
+
+      it 'diffs a long list' do
+        expect(subject.to_html).to eq '<div class="changed"><ul>
+<li>Tilstandsligninger for gasser, herunder ikke-idealitet</li>
+<li class="removed"><del class="del">Kinetisk gasteori</del></li>
+<li>Termodynamiske nøglebegreber (herunder enthalpi, entropi, Gibbs energi, kemisk potentiale, varmekapacitet)</li>
+<li>Faseligevægte og fasediagrammer</li>
+<li>Opløselighed og kolligative egenskaber</li>
+<li>Kemisk ligevægt, herunder aktivitetsbegrebet og sammenhæng med Gibbs energi</li>
+<li>Elektrokemiske nøglebegreber (herunder standardpotentialer, Nernst-ligningen)</li>
+<li class="changed">Kinetik (herunder reaktionsorden, temperaturafhængighed og Arrhenius-ligningen, <del class="del">elementarreaktioner)</del><ins class="ins ins-after">elementarreaktioner,</ins> <ins class="ins ins-before">katalyse)</ins>
+</li>
+<li class="removed"><del class="del">Katalyse</del></li>
+<li>Systematisk opstilling af flowdiagram (herunder frihedsgradsanalyse og opstilling af stofbalancer)</li>
+<li class="changed">Der arbejdes systematisk med forskellige beregninger på kemitekniske processer, herunder beregninger af manglende data <ins class="ins ins-before">ud</ins>fra de opstillede stofbalancer samt energibalancer for både ikke-reaktive og reaktive systemer</li>
+</ul></div>'
+      end
+    end
   end
 end
