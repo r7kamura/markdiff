@@ -100,7 +100,6 @@ module Markdiff
       end
 
       # Partial matching
-
       before_node.children.each_with_index do |before_child, index|
         next if identity_map[before_child]
 
