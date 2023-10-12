@@ -103,7 +103,7 @@ module Markdiff
       before_node.children.each_with_index do |before_child, index|
         next if identity_map[before_child]
 
-        next_match = before_node.children[index..].find { |child| identity_map[child] }
+        next_match = before_node.children[index..-1].find { |child| identity_map[child] }
 
         after_node.children.each do |after_child|
           case
