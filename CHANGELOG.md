@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Removed support for ruby 2.7.x.
+- Upgraded tests to run with ruby 3.4.3.
+- Updated dependencies.
+
 ## 0.8.1
 
 ### Fixed
