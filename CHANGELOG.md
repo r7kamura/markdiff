@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Removed
+
+- Drop Ruby 2.7 support.
+
 ## 0.8.1
 
 ### Fixed
