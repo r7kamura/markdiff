@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    markdiff (0.8.1)
+    markdiff (0.9.0)
       diff-lcs
       nokogiri
 
@@ -9,10 +9,6 @@ GEM
   remote: https://rubygems.org/
   specs:
     diff-lcs (1.6.2)
-    mini_portile2 (2.8.9)
-    nokogiri (1.19.4)
-      mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
     nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     racc (1.8.1)
